@@ -3,23 +3,26 @@ import { estilos } from "../style/Estilos"
 
 const Aula10 = () => {
     const [contador, setContador] = useState(0)
+    //O useEffect fica "monitorando" uma variável e executa
+    //a função sempre que ela sofrer uma alteração
+    //Esse efeito será executado sempre que o "contador" mudar
+    useEffect( () => {
+        console.log(contador);
+        document.title = `Contagem: ${contador}` 
+    }, [contador] )
 
-    // Atualiza título e salva no localStorage sempre que o contador mudar
-    useEffect(() => {
-        console.log(contador)
-        document.title = `Contagem: ${contador}`
-
-        localStorage.setItem('valorcontador', JSON.stringify(contador))
-    }, [contador])
-
-    // Recupera valor salvo ao carregar o componente
-    useEffect(() => {
-        const contadorSalvo = localStorage.getItem("valorcontador")
+    //o useEffect com [] vazia, significa que o efeito deve ser executado
+    //apenas quando a página é carregada
+    useEffect( () => {  
+        const contadorSalvo = localStorage.getItem('valorContador') || 0;
         setContador(JSON.parse(contadorSalvo))
-    }, [])
+    }, [] )
 
-    function botaoComputador() {
-        setContador(contador + 1)
+    function botaoContador () {
+        const novoContador = contador + 1
+        setContador(novoContador)
+        //Armazenando localmente nosso contador
+        localStorage.setItem('valorContador', JSON.stringify(novoContador))
     }
 
     return (
@@ -29,8 +32,9 @@ const Aula10 = () => {
             <hr />
 
             <p>Você clicou {contador} vezes</p>
-            <button onClick={botaoComputador}>Clique aqui</button>
+            <button onClick={botaoContador} >Clique aqui</button>
         </div>
     )
 }
-export default Aula10;
+
+export default Aula10

@@ -1,7 +1,8 @@
 .texto {
-    color: rgb(255, 0, 0);
+    color: blue;
     font-weight: bold;
 }
+
 .descricao {
     font-style: italic;
 }

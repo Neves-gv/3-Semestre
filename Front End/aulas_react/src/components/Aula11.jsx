@@ -1,14 +1,15 @@
-import {estilos} from '../style/Estilos.jsx';
-import Aula11_Cadastroprodutos from './Aula11_Cadastroprodutos.jsx';
+import { estilos } from "../style/Estilos"
+import Aula11_CadastroProdutos  from './Aula11_CadastroProdutos'
 
 const Aula11 = () => {
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 11 -- Cadastrando uma lista de produtos </h2>
-            <h3>Criando uma lista de produtos e armasenando os dados localmente</h3>
-            <Aula11_Cadastroprodutos />
+            <h2>Aula 11 - Cadastro de Produtos</h2>
+            <h3>Criando uma lista de produtos e armazenando os dados localmente</h3>
+            <hr />
+            <Aula11_CadastroProdutos />
         </div>
     )
 }
 
-export default Aula11;
+export default Aula11

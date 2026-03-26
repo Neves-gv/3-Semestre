@@ -1,36 +1,46 @@
-import { useState } from 'react';
-
-// Sub-componente para cada time
-const ContadorTime = ({ nomeTime }) => {
-    const [pontos, setPontos] = useState(0);
-
-    const aumentar = (valor) => setPontos(pontos + valor);
-    const diminuir = () => {
-        if (pontos > 0) setPontos(pontos - 1);
-    };
-
-    return (
-        <div style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px' }}>
-            <h2>{nomeTime}</h2>
-            <h3>Pontuação: {pontos}</h3>
-            <button onClick={() => aumentar(1)}>+1 (Lance Livre)</button>
-            <button onClick={() => aumentar(2)}>+2 (Cesta)</button>
-            <button onClick={() => aumentar(3)}>+3 (Triplo)</button>
-            <button onClick={diminuir}>Corrigir (-1)</button>
-        </div>
-    );
-};
+import { useState } from "react"
 
 const Aula06_Placar = () => {
+    const [time1, setTime1] = useState(0)
+    const [time2, setTime2] = useState(0)
+    const [time3, setTime3] = useState(0)
+    const [time4, setTime4] = useState(0)
+
+    function botaoZerar() {
+        setTime1(0)
+        setTime2(0)
+        setTime3(0)
+        setTime4(0)
+    }
+
     return (
         <div>
-            <h1>Placar de Basquete</h1>
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-                <ContadorTime nomeTime="Vitor" />
-                <ContadorTime nomeTime="Neves" />
-            </div>
-        </div>
-    );
-};
+            <h1>Placar Futebol</h1>
+            <h2>São Paulo: {time1}</h2>
+            <button onClick={() => setTime1(time1 + 1)}>+1</button>
 
-export default Aula06_Placar;
+            <h2>Corinthians: {time2}</h2>
+            <button onClick={() => setTime2(time2 + 1)}>+1</button>
+
+            <hr />
+
+            <h1>Placar Basquete</h1>
+            <h2>Warrios: {time3}</h2>
+            <button onClick={() => setTime3(time3 + 1)}>+1</button>
+            <button onClick={() => setTime3(time3 + 2)}>+2</button>
+            <button onClick={() => setTime3(time3 + 3)}>+3</button>
+
+            <h2>Lakers: {time4}</h2>
+            <button onClick={() => setTime4(time4 + 1)}>+1</button>
+            <button onClick={() => setTime4(time4 + 2)}>+2</button>
+            <button onClick={() => setTime4(time4 + 3)}>+3</button>
+
+            <br />
+            <button onClick={botaoZerar}>Zerar</button>
+        </div>
+    )
+}
+
+
+
+export default Aula06_Placar

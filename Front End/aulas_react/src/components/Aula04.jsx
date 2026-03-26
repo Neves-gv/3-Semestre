@@ -1,32 +1,26 @@
-import { estilos } from '../style/Estilos.jsx';
-import Aula04_IMC from './Aula04_IMC.jsx';
-import Aula04_Filmes from './Aula04_Filmes.jsx';
+import { estilos } from "../style/Estilos"
+import Aula04_Filmes from "./aula04_Filmes"
+import Aula04_IMC from "./Aula04_IMC"
 
 const Aula04 = () => {
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 04 — Props</h2>
-            <h3>Conceitos básicos e configuração de ambiente</h3>
-            <p>Criação de componentes reutilizáveis e suas estilizações</p>
+            <h2>Aula 04 - Props</h2>
+            <h3>Criação de componentes reutilizáveis e suas estilizações</h3>
             <hr />
-            <Aula04_IMC nome='Neves' peso="75" altura='1.70' cor="#b300ff" />
-            <Aula04_IMC nome='Jorge' peso="80" altura='1.80' cor="#b300ff" />
+            <Aula04_IMC nome='Jorge' peso={80} altura={1.80} cor="#7d3b7a" />
+            <Aula04_IMC nome='Marcia' peso={60} altura={1.85} cor="#25f6c1" />
+            <Aula04_IMC nome='Roberta' peso={100} altura={1.70} cor="#ff6300" />
+
             <hr />
-            <div style={{display: 'flex', gap: '18'}}>
-                <Aula04_Filmes
-                    img="https://i.pinimg.com/736x/46/91/c4/4691c479cbf53076d3e99d13320c0a5e.jpg"
-                    nome="Como treinar o seu Dragão" genero="Ação" />
-                <br />
-                <Aula04_Filmes
-                    img="https://i.pinimg.com/1200x/d0/3d/53/d03d53622f49db7ae45772d3c3e6c639.jpg"
-                    nome="Tropa de Elite" genero="Ação" />
-                <br />
-                <Aula04_Filmes
-                    img="https://i.pinimg.com/1200x/4e/74/0d/4e740d2ab7ff95d74bd6674bf947afd1.jpg"
-                    nome="Velozes e Furiosos" genero="Ação" />
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <Aula04_Filmes titulo="Matrix" genero="Ficção Cientifica" foto="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz8qOwQ5bMOsevXWxFwtPeem_Nnd4ORZIVlw&s" />
+                <Aula04_Filmes titulo="O Poderoso Chefão" genero="Drama" foto="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE0NiuqExTSnKLd6uUwIRhJjbTkTUYwAMcmQ&s" />
+                <Aula04_Filmes titulo="Titanic" genero="Romance" foto="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmGYl9YFhnkr_c5WJSus4l2WFQE6sk0oHQ2g&s" />
+                <Aula04_Filmes titulo="O Rei Leão" genero="Animação" foto="https://lumiere-a.akamaihd.net/v1/images/image_78b18547.jpeg?region=0,0,540,810" />
             </div>
         </div>
-    );
+    )
 }
 
-export default Aula04;
+export default Aula04

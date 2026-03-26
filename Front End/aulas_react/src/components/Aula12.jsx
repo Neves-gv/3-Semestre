@@ -1,21 +1,29 @@
-import { estilos } from "../style/Estilos";
-import { useState } from "react";
+import { useEffect, useState } from "react"
+import { estilos } from "../style/Estilos"
 
 const Aula12 = () => {
-    const [imagem, setImagem] = useState('');
+    const [imagem, setImagem] = useState("")
 
-const buscarDados = async () => {
-    // No fetch colocamos o endpoint da API
-    // https://localhost:3000/usuarios
-    const resposta = await fetch('https://dog.ceo/api/breeds/image/random');
-    const daados = await resposta.json();
-    console.log(dados.message);
-    setImagem(dados.message);
-}
+    const buscarDados = async () => {
+        try {
+            //No fetch colocamo o endpoint da API
+            // http://localhost:3000/usuarios
+            const resposta = await fetch('https://dog.ceo/api/breeds/image/random')
+            const dados = await resposta.json()
+
+            setImagem(dados.message)
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+        }
+    }
+
+    useEffect( () => {
+        buscarDados()
+    }, [] )
 
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 12 - Consumo APIs</h2>
+            <h2>Aula 12 - Consumo de APIs</h2>
             <h3>Aprendendo a utilizar APIs em React</h3>
             <hr />
             <div>
@@ -27,4 +35,4 @@ const buscarDados = async () => {
     )
 }
 
-export default Aula12;
+export default Aula12

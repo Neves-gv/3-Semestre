@@ -1,47 +1,37 @@
-export const Aula04_Filmes = ({ img, nome, genero }) => {
+const Aula04_Filmes = ( { foto, titulo, genero } ) => {
     return (
-        <div style={estilos.container}> 
-            <div style={estilos.card}>
-                <img
-                    src={img}
-                    alt={nome}
-                    style={estilos.imagem}
-                />
-                <div style={estilos.corpoCard}>
-                    <h3 style={estilos.titulo}>{nome}</h3>
-                    <h5>Gênero: {genero}</h5>
-                </div>
-            </div>
+        <div style={estilos.filmeCard}>
+            <img src={foto} alt="" style={estilos.filmeFoto} />
+            <h3>{titulo}</h3>
+            <p>Genero: {genero}</p>
+            <button style={estilos.botao} >Assistir</button>
         </div>
-    );
-};
-export default Aula04_Filmes;
+    )
+}
 
+/** @type {{ [key: string]: import('react').CSSProperties }} */
 const estilos = {
-    container: {
-        display: 'inline-block', 
-        margin: '10px',
-    },
-    card: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '180px',
-        border: '1px solid #ddd',
-        borderRadius: '12px',
-        backgroundColor: '#fff',
-        overflow: 'hidden' 
-    },
-    imagem: {
+    filmeCard: {
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '16px',
+        textAlign: 'center',
+        maxWidth: '250px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+    }, 
+    filmeFoto: {
+        width: '100%', 
+        height: '300px',
+        borderRadius: 4
+    }, 
+    botao: {
         width: '100%',
-        height: '250px',
-        objectFit: 'cover'
-    },
-    corpoCard: {
-        padding: '12px',
-        textAlign: 'center'
-    },
-    titulo: {
-        margin: '0 0 8px 0',
-        fontSize: '1.1rem'
-    },
-};
+        backgroundColor: '#e30613',
+        color: '#fff',
+        padding: 3,
+        borderRadius: 4,
+        border: 0
+    }
+}
+
+export default Aula04_Filmes

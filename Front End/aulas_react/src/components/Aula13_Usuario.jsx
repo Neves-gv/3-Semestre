@@ -1,19 +1,15 @@
-
-const Aula13_Usuario = ({ usuario,botaoExcluir }) => {
-
-    if (!usuario) return
+const Aula13_Usuario = ({ usuario, botaoExcluir }) => {
     return (
-        <div style={estilos.cardUsuario}>
+        <div style={estilos.cardProduto}>
             <h2 style={estilos.titulo}>{usuario.nome}</h2>
-            <p>{usuario.email}</p>
+            <h2 style={estilos.titulo}>{usuario.email}</h2>            
             <button style={estilos.botao} onClick={() => botaoExcluir(usuario.id_usuario)} >Excluir</button>
-
         </div>
     )
 }
 
 const estilos = {
-    cardUsuario: {
+    cardProduto: {
         border: "1px solid #ccc",
         padding: 10,
         width: 250, 

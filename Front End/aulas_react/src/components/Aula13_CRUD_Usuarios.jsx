@@ -2,65 +2,90 @@ import { useEffect, useState } from "react"
 import Aula13_Usuario from "./Aula13_Usuario"
 
 const Aula13_CRUD_Usuarios = () => {
-    const [listaUsuarios, setListaUsuario] = useState([])
+    const [listaUsuarios, setListaUsuarios] = useState([])
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
+    const [senha, setSenha] = useState('')
 
-    function botaoAdicionar() {
+    async function botaoAdicionar() {
         const novoUsuario = {
             nome: nome,
             email: email,
+            senha: senha,
         }
 
-        const novaListaUsuario = [...listaUsuarios, novoUsuario]
-        setListaUsuario(novaListaUsuario)
-        localStorage.setItem('vetorListaUsuario', JSON.stringify(novaListaUsuario))
+        try {
+            const resposta = await fetch('http://10.130.42.68:3001/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(novoUsuario)
+            })
 
+            if (!resposta.ok) {
+                throw new Error('Erro ao adicionar usuários: ' + resposta.statusText)
+            }
+
+            buscarDados()
+            LimparCamposFormularios()
+
+        } catch (erro) {
+            console.error('Erro ao adicionar produto', erro.message)
+        }
+    }
+
+    async function botaoExcluir(id_usuario) {
+
+        try {
+            const resposta = await fetch(`http://10.130.42.68:3001/usuarios/${id_usuario}`, {
+                method: 'DELETE'
+            })
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao excluir usuario: ' + resposta.statusText)
+            }
+
+            buscarDados()
+
+        } catch (erro) {
+            console.error('Erro ao adicionar usuario', erro.message)
+        }
+    }
+
+    function LimparCamposFormularios() {
         setNome('')
         setEmail('')
-
-    }
-    const botaoExcluir = async () => {
-
-        if (!window.confirm('Deseja realmente excluir o usuario?'))
-
-            try {
-                const resposta = await fetch(`http://10.130.42.68:3001/usuarios/${id_usuarios}`, {
-                    method: 'DELETE',
-                });
-                if (!resposta.ok) {
-                    throw new Error('Erro ao excluir usuario' + resposta.statusText);
-                }
-                buscarDados()
-
-            } catch (erro) {
-                console.error('Erro ao adicionar usuario', erro.message);
-
-            }
+        setSenha('')
     }
 
+    useEffect(() => {
+        buscarDados()
+    }, [])
 
+    //Função para buscar os dados de uma API
     async function buscarDados() {
         try {
             const resposta = await fetch('http://10.130.42.68:3001/usuarios')
             const dados = await resposta.json()
-            setListaUsuario(dados)
-        } catch (error) {
-            console.error('Erro ao carregar os dados', error);
+            setListaUsuarios(dados)
+
+        } catch (erro) {
+            console.error('Erro ao carregar os dados', erro.message)
         }
     }
-    useEffect(() => { buscarDados() }, [])
 
     return (
         <div>
-            <h1>Cadastro de Usuarios</h1>
+            <h1>Cadastro de Usuários</h1>
             <div style={{ display: "flex", flexDirection: 'column', gap: 10 }}>
                 <input type="text" placeholder="Nome" style={estilos.inputs} value={nome}
                     onChange={(event) => setNome(event.target.value)} />
-                <input type="text" placeholder="email" style={estilos.inputs} value={email}
+                <input type="email" placeholder="Email" style={estilos.inputs} value={email}
                     onChange={(event) => setEmail(event.target.value)} />
+                <input type="password" placeholder="Senha " style={estilos.inputs} value={senha}
+                    onChange={(event) => setSenha(event.target.value)} />
                 <button style={estilos.botao} onClick={botaoAdicionar}>Adicionar Usuario</button>
-                <button style={estilos.botao} onClick={botaoExcluir}>Excluir Usuario</button>
 
                 <hr />
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }} >

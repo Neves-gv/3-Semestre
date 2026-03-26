@@ -1,10 +1,9 @@
-const Aula09_Numero = ({ numero, excluir }) => {
+const Aula09_Numero = ( { numero, index, excluir }) => {
     return (
-        <span>
-            {numero}
+        <p> 
+            {numero}  
             <button onClick={excluir}>Excluir</button>
-        </span>
-    );
-};
-
-export default Aula09_Numero;
+        </p>
+    )
+}
+export default Aula09_Numero

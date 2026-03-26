@@ -1,34 +1,33 @@
-// import um arquivo css tradicional
+//Importando um arquivo CSS tradicional
 import '../style/Aula03.css'
-import {estilos} from '../style/Estilos.jsx';
-import Aula03_Login from './Aula03_Login.jsx';
+import { estilos } from '../style/Estilos'
+import Aula03_Login from './Aula03_Login'
 
-export const Aula03 = () => {
+const Aula03 = () => {
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 03 -- Componentes e estilização</h2>
-            <h3>Criação de coponentes reutilizaveis  e suas estilizações </h3>
-            <p>Aprendendo a criar e reutilizar componentes e estilização para melhorar a UI</p>
+            <h2>Aula 03 - Componentes e estilização</h2>
+            <h3>Criação de componentes reutilizáveis e suas estilizações</h3>
+            <p>Aprendendo a criar e reutilizar componentes e estilizações para melhorar a UI</p>
 
-            <br />
-            <p className='texto'>CSS Externo</p>
-            <p className='descricao'>A forma mais simples e classica de estilização CSS tradicional</p>
-            <br />
-            <p style={ { color:'red', fontWeight: 'bold' } } >Estilização em inline</p>
-            <p style={{fontStyle:'italic'}}>estilos aplicados diretamente nos elementos como objetos</p>
+            <hr />
+            <p className="texto">CSS Externo</p>
+            <p className='descricao'>A forma mais simples e clássica de estilização CSS</p>
 
-            <br />
+            <hr />
+            <p style={ { color:'blue', fontWeight: 'bold' } } >Estilização Inline</p>
+            <p style={{ fontStyle: 'italic' }}>Estilos aplicados diretamente nos elementos como OBJETOS</p>
 
-            <p style={estilos.tituloModulo}>Css Modulo</p>
-            <p style={estilos.descricaoMOdulo}>Css Modulazido é a forma mais comum para mobile</p>
-            <br />
+            <hr />
+            <p style={ estilos.tituloModulo }>CSS Modules</p>
+            <p style={ estilos.descricaoModulo }>CSS modularizado é a forma mais comum para Mobile</p>
 
+            <hr />
             <Aula03_Login />
-
         </div>
     )
 }
 
 
 
-export default Aula03;
+export default Aula03

@@ -1,66 +1,65 @@
-import { estilos } from '../style/Estilos.jsx';
-import Aula05_Exercicios from './Aula05_Exercicios.jsx';
+import { estilos } from "../style/Estilos"
 
-export const Aula05 = () => {
-    const botaoClique = () => {
-        alert('Voce cllicou no botão')
-        console.log('Clique no Botão');
-    }
-    const botaoduploclique = () => {
-        alert("duplo clique")
-    }
-    function entradaMouse(event) {
+const Aula05 = () => {
+    function botaoClique (){
+        alert ('Você clicou no botão')
+        console.log('Clique no botão')
+    }   
+
+    function entradaMouse (event){
         console.log('Mouse entrou');
-        event.target.style.backgroundColor = '#4c00ff';
+        event.target.style.backgroundColor = '#7db5ff';
     }
-    function saidaMaouse(event) {
+
+    function saidaMouse (event){
         console.log('Mouse saiu');
-        event.target.style.backgroundColor = '#ff0000';
+        event.target.style.backgroundColor = '#7dffb3';
     }
-    function alterarcor(envet) {
-        if (envet.key == 'a') {
-            event.target.style.backgroundColor = '#2205ff';
-        }
-        if (envet.key == 'w') {
-            event.target.style.backgroundColor = '#05ff3f';
-        }
-        if (envet.key == 'd') {
-            event.target.style.backgroundColor = '#a305ff';
-        }
-        if (envet.key == 's') {
-            event.target.style.backgroundColor = '#565656ed';
-        }
+
+    function alterarCor (event) {
+        if (event.key == 'a') {
+            event.target.style.backgroundColor = '#0000ff';
+            event.target.style.color = "#fff"
+        } 
     }
+    
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 05 -- Eventos de um Componentes</h2>
-            <h3>Os eeventos são fundamentais para criar interativibilidade em aplicadivos</h3>
-            <hr />
-            <p>Evento onlick - clique do usuario em qualquer elemento</p>
-            <button onClick={botaoClique}>Clique aqui</button>
-            <p onDoubleClick={botaoduploclique}>Este paragrafo da 2 clique</p>
-            <p onDoubleClick={() => { alert("duplo clique2") }}>Este paragrafo da 2 clique2</p>
+            <h2>Aula 05 - Eventos de um componente</h2>
+            <h3>Os eventos são fundamentais para criar interatividade em 
+                    aplicações web 
+            </h3>
             <hr />
 
-            <p>Evento onCharge - Sempre que um campo de entrada é alterdo</p>
-            <input onChange={(event) => alert(event.target.value)} type="text" placeholder='Digite algo...' />
-            <select onChange={(event) => alert(event.target.value)}>
-                <option value="1A">1° A EM</option>
-                <option value="2A">2° A EM</option>
-                <option value="3A">3° A EM</option>
-                <option value="3B">3° B EM</option>
+            <p>Evento onClick - clique do usuário em qualquer elemento</p>
+            <button onClick={botaoClique} >Clique aqui</button>
+            <p onDoubleClick={() => alert('Duplo Clique')}> Este parágrafo recebe um duplo clique </p>
+
+            <hr />
+
+            <p>Evento onChange - sempre que um campo de entrada é alterado</p>
+
+            <input onChange={(event) => console.log(event.target.value) } type="text" placeholder="Digite algo..."/>
+
+            <select onChange={(event) => console.log(event.target.value)}>
+                <option value="1A">1º A EM</option>
+                <option value="2A">2º A EM</option>
+                <option value="3A">3º A EM</option>
+                <option value="3B">3º B EM</option>
             </select>
+
             <hr />
-            <p>event onMouseEnter/ onMouseleve</p>
-            <p onMouseEnter={entradaMouse} onMouseLeave={saidaMaouse}>passe o mause aqui</p>
+            <p>Evento onMouseEnter / onMouseLeave</p>
+            <p onMouseEnter={entradaMouse} onMouseLeave={saidaMouse} >Passe o mouse aqui</p>
+
             <hr />
-            <p>evento onKeyDown - Aciona em evento quando  preciona uma tecla</p>
-            <input type="text" onKeyDown={(envet) => alert(envet.key)} />
-            <input type="text" onKeyDown={alterarcor} placeholder='a - azul, w - verde, d - roxo,s - cinza' />
-            <hr />
-            <Aula05_Exercicios />
+
+            <p>Evento onKeyDown - Aciona em evento quando pressiona uma tecla</p>
+            <input type="text" onKeyDown={(event) => alert(event.key)} />
+            <input type="text" onKeyDown={alterarCor} 
+                placeholder="a - azul, v - verde, c - cinza, r - roxo"/>
         </div>
     )
 }
 
-export default Aula05;
+export default Aula05

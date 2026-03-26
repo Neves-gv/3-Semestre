@@ -1,35 +1,18 @@
-import { estilos } from '../style/Estilos.jsx';
+import { estilos } from "../style/Estilos"
+import jogo from '../assets/jogo.png'
 
 const Aula08 = () => {
     return (
         <div style={estilos.cardAula}>
-            <h2>Aula 08 — Revisão</h2>
-            <h3>Revisão de conteúdo com o jogo Número Secreto</h3>
-            <a style={localEstilos.container} href="https://jogo-numero-secreto-gold-seven.vercel.app/" >
-                <img style={localEstilos.imagem} src="../img/jogosecreto.png" />
-                <p>Jogar</p>
+            <h2>Aula 08 - Revisão</h2>
+            <h3>Revisão de conteúdo com o Jogo Número Secreto</h3>
+            <a href="https://jogo-numero-secreto-bice-three.vercel.app/">
+                <img src={jogo} style={{width:'100%'}} />
+                Link do Jogo
             </a>
         </div>
-    );
-};
+    )
+}
 
-const localEstilos = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '20px',
-        textDecoration: 'none',
-        color: '#fff',
-    },
-    imagem: {
-        width: '120px',
-        height: '120px',
-        marginBottom: '10px',
-        objectFit: 'cover',
-        border: '2px solid #ffffff',
-    },
-};
+export default Aula08
 
-export default Aula08;

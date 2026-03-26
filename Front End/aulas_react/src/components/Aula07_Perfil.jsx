@@ -1,84 +1,52 @@
-import React, { useState } from 'react';
+import { useState } from "react"
 
-const Aula07_Perfil = ({ foto, nome }) => {
+const Aula07_Perfil = ({foto, nome}) => {
     return (
-        <div style={estilos.container}>
-            <div style={estilos.card}>
-                <Img foto={foto} />
-                <Nome nome={nome} />
-                <Entrar />
-            </div>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 10,
+            border: '1px solid #ccc',
+            padding: 20,
+            width: 220,
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+            borderRadius: 12,
+            margin: 10
+        }}>
+            <Avatar foto={ foto } />
+            <InfoUsuario nome={nome}  />
+            <BotaoSeguir />
         </div>
-    );
-};
+    )
+}
 
-export const Img = ({ foto }) => {
+export const Avatar = ({ foto}) =>{
     return (
-        <img
-            style={estilos.imagem}
-            src={foto}
-            alt="Foto de Perfil"
-        />
-    );
-};
+        <img src={foto} alt="" style={{ width: 100, height: 100, borderRadius:'50%' }} />
+    )
+}
 
-export const Nome = ({ nome }) => {
-    return <h3 style={estilos.titulo}>{nome}</h3>;
-};
+export const InfoUsuario = ({nome}) =>{
+    return (
+        <h3>{nome}</h3>
+    )
+}
 
-const Entrar = () => {
-    const [seguindo, setSeguindo] = useState(false);
+export const BotaoSeguir = () =>{
+    const [seguindo, setSeguindo] = useState(false)
 
     return (
-        <button 
-            style={{...estilos.botao, backgroundColor: seguindo ? 'rgb(32, 61, 246)' : '#1404ffa4'}} onClick={() => setSeguindo(!seguindo)}>
-            {seguindo ? 'Seguindo' : 'Seguir'}
+        <button onClick={() => setSeguindo(!seguindo)} style={{
+            backgroundColor: seguindo == false ? "#4caf50" : "#50AFFF" ,
+            color: '#fff',
+            border: 'none',
+            padding: '10px 16px',
+            borderRadius: 8
+        }}>
+            { seguindo == false ? "Seguir" : "Deixar de Seguir" }
         </button>
-    );
-};
+    )
+}
 
-const estilos = {
-    container: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '20px'
-    },
-    card: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '40px',
-        backgroundColor: '#5f5f5f',
-        borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-        width: '100%',
-        maxWidth: '350px'
-    },
-    imagem: {
-        width: '80px',
-        height: '80px',
-        borderRadius: '50%',
-        marginBottom: '20px',
-        objectFit: 'cover',
-        border: '2px solid #ffffff'
-    },
-    titulo: {
-        margin: '0 0 20px 0',
-        color: '#ffffff',
-        fontWeight: 'bold'
-    },
-    botao: {
-        width: '100%',
-        padding: '14px',
-        marginTop: '20px',
-        borderRadius: '8px',
-        border: 'none',
-        color: 'white',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        cursor: 'pointer'
-    },
-};
-
-export default Aula07_Perfil;
+export default Aula07_Perfil
