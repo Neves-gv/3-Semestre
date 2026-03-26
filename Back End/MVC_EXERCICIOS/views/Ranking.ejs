@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking de Jogadores</title>
+    <style>
+        :root {
+            --bg: #f6f7fb;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 8px 24px rgba(0, 0, 0, .06);
+            --radius: 12px;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, sans-serif;
+            background: var(--bg);
+            color: #111827;
+        }
+
+        .wrap {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #d1fae5;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 120px;
+            gap: 8px;
+        }
+
+        input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        .warning {
+            background: var(--warning);
+        }
+
+        .erro {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="card">
+            <h1>🏆 Ranking Global</h1>
+
+            <% if(error) { %>
+                <div class="erro">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                    <div class="list">
+                        <% ranking.forEach(player=> { %>
+                            <div class="item">
+                                <div>
+                                    <strong>
+                                        <%= player.descricao() %>
+                                    </strong>
+                                    <div style="margin-top: 4px;">
+                                        <span class="badge">
+                                            <%= player.nivel %>
+                                        </span>
+                                        <span style="color: var(--muted); margin-left: 10px;">
+                                            <%= player.pontuacao %> pts
+                                        </span>
+                                    </div>
+                                </div>
+                                <form action="/ranking/atualizar-nivel" method="POST">
+                                    <input type="hidden" name="id" value="<%= player.id %>">
+                                    <button type="submit" class="warning">+10 Pontos</button>
+                                </form>
+                            </div>
+                            <% }) %>
+                    </div>
+        </div>
+
+        <div class="card">
+            <h2>Novo Jogador</h2>
+            <form action="/ranking" method="POST" class="row">
+                <input type="text" name="nome" placeholder="Nome do Jogador" required />
+                <input type="number" name="pontuacao" placeholder="Pontos Iniciais" value="0" />
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
