@@ -38,6 +38,7 @@ const estilos = StyleSheet.create({
     fontSize: 30,
   },
   containerLinhas: {
+    display: 'flex',
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
@@ -55,5 +56,6 @@ const estilos = StyleSheet.create({
   linhadireita: {
     fontSize: 18,
     color: 'blue',
+    fontWeight: 'bold',
   }
 });
