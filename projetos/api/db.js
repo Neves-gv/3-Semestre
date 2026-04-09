@@ -4,7 +4,7 @@ const BD = new Pool({
     user: 'postgres',
     host: 'localhost',
     password: 'admin',
-    database: 'bd_finan_control_3a',
+    database: 'bd_finan_control_3b',
     port: 5432,
 });
 

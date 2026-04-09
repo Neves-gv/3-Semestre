@@ -13,7 +13,7 @@ nome VARCHAR(100) NOT NULL,
 descricao TEXT,
 cor VARCHAR(255) NOT NULL,
 icone VARCHAR(255) NOT NULL,
-tipo CHAR(1),
+tipo CHAR(10),
 ativo BOOLEAN DEFAULT TRUE
 );
 

@@ -6,7 +6,6 @@ const documentacao = {
         version: '1.0.0'
     },
     servers: [
-        { url: 'http://10.130.42.68:3001', description: 'Servidor prof Douglas' },
         { url: 'http://localhost:3000', description: 'Servidor local (localhost)' },
     ],
     tags: [
@@ -261,7 +260,155 @@ const documentacao = {
                     500: { description: "Erro interno no servidor" }
                 }
             }
-        }
+        },
+
+        // ================= TRANSAÇÕES =================
+        "/transacao": {
+            get: {
+                tags: ["transacao"],
+                summary: "Listar todas as transações ativas",
+                responses: {
+                    200: {
+                        description: "Transações listadas com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
+                            }
+                        }
+                    },
+                    500: { description: "Erro interno no servidor" }
+                }
+            },
+            post: {
+                tags: ["transacao"],
+                summary: "Criar nova transação",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Criar_Transacao" }
+                        }
+                    }
+                },
+                responses: {
+                    201: { description: "Transação criada com sucesso" },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
+        "/transacao/tipo/{tipo}": {
+            get: {
+                tags: ["transacao"],
+                summary: "Listar transações por categoria",
+                parameters: [
+                    {
+                        name: "id_categoria",
+                        in: "query",
+                        required: true,
+                        descricao: "Tipo de transação (E - Entrada, S - Saída)",
+                        schema: { type: "string", enum: ["E", "S"], example: "S" }
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Transações listadas com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
+                            }
+                        }
+                    },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
+        "/transacao/categoria/{id_categoria}": {
+            get: {
+                tags: ["transacao"],
+                summary: "Listar transações por categoria",
+                parameters: [
+                    {
+                        name: "id_categoria",
+                        in: "query",
+                        required: true,
+                        descricao: "ID da categoria",
+                        schema: { type: "integer", example: 1 }
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Transações listadas com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
+                            }
+                        }
+                    },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
+        "/transacao/subcategoria/{id_subcategoria}": {
+            get: {
+                tags: ["transacao"],
+                summary: "Listar transações por subcategoria",
+                responses: {
+                    200: {
+                        description: "Transações listadas com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
+                            }
+                        }
+                    },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
+        "/transacao/{id_transacao}": {
+            put: {
+                tags: ["transacao"],
+                summary: "Atualizar transação",
+                parameters: [
+                    {
+                        name: "id_transacao",
+                        in: "path",
+                        required: true,
+                        schema: { type: "integer", example: 1 }
+                    }
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Atualizar_Transacao" }
+                        }
+                    }
+                },
+                responses: {
+                    200: { description: "Transação atualizada com sucesso" },
+                    404: { description: "Transação não encontrada" },
+                    500: { description: "Erro interno no servidor" }
+                }
+            },
+            delete: {
+                tags: ["transacao"],
+                summary: "Remover transação (soft delete)",
+                parameters: [
+                    {
+                        name: "id_transacao",
+                        in: "path",
+                        required: true,
+                        schema: { type: "integer", example: 1 }
+                    }
+                ],
+                responses: {
+                    200: { description: "Transação removida com sucesso" },
+                    404: { description: "Transação não encontrada" },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
     },
 
     components: {
@@ -371,9 +518,55 @@ const documentacao = {
                     nome: { type: "string", example: "Doces" },
                     id_categoria: { type: "integer", example: 1 }
                 }
+            },
+
+            // ===== TRANSAÇÕES =====
+            Listar_Transacao: {
+                type: "object",
+                properties: {
+                    id_transacao: { type: "integer", example: 1 },
+                    id_usuario: { type: "integer", example: 1 },
+                    id_categoria: { type: "integer", example: 1 },
+                    id_subcategoria: { type: "integer", example: 1 },
+                    tipo: { type: "string", enum: ["E", "D"], example: "E" },
+                    valor: { type: "number", format: "decimal", example: 150.75 },
+                    data: { type: "string", format: "date", example: "2026-04-09" },
+                    descricao: { type: "string", example: "Compra no supermercado" },
+                }
+            },
+            Criar_Transacao: {
+                type: "object",
+                required: ["id_categoria", "id_subcategoria", "valor", "data", "descricao"],
+                properties: {
+                    id_transacao: { type: "integer", example: 1 },
+                    valor: { type: "number", format: "decimal", example: 150.75 },
+                    descricao: { type: "string", example: "Compra no supermercado" },
+                    data_registro: { type: "string", format: "date", example: "2026-04-09" },
+                    data_vencimento: { type: "string", format: "date", example: "2026-04-09" },
+                    data_pagamento: { type: "string", format: "date", example: "2026-04-09" },
+                    tipo: { type: "boolean", example: true },
+                    id_categoria: { type: "integer", example: 1 },
+                    id_subcategoria: { type: "integer", example: 1 }
+                }
+            },
+            Atualizar_Transacao: {
+                type: "object",
+                properties: {
+                    id_usuario: { type: "integer", example: 1 },
+                    id_categoria: { type: "integer", example: 1 },
+                    id_subcategoria: { type: "integer", example: 1 },
+                    valor: { type: "number", format: "decimal", example: 150.75 },
+                    data: { type: "string", format: "date", example: "2026-04-09" },
+                    descricao: { type: "string", example: "Compra no supermercado" }
+                }
+            },
+            Deletar_Transacao: {
+                type: "object",
+                properties: {
+                    id_transacao: { type: "integer", example: 1 }
+                }
             }
         }
     }
-}
-
+};
 export default documentacao;
