@@ -16,6 +16,23 @@ router.get('/subcategoria', async (req, res) => {
     }
 });
 
+// CADASTRAR SUBCATEGORIA
+router.post('/subcategoria', async (req, res) => {
+    const { nome, id_categoria } = req.body;
+    try {
+        const comando = `
+            INSERT INTO SUBCATEGORIAS (nome, id_categoria) 
+            VALUES ($1, $2) RETURNING *
+        `;
+        const valores = [nome, id_categoria];
+        const resultado = await BD.query(comando, valores);
+        return res.status(201).json(resultado.rows[0]);
+    } catch (error) {
+        console.error('Erro ao cadastrar subcategoria', error.message);
+        return res.status(500).json({ error: 'Erro ao cadastrar subcategoria' });
+    }
+});
+
 //  ATUALIZAR SUBCATEGORIA
 router.put('/subcategoria/:id_subcategoria', async (req, res) => {
     const { id_subcategoria } = req.params;

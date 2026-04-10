@@ -14,13 +14,13 @@ descricao TEXT,
 cor VARCHAR(255) NOT NULL,
 icone VARCHAR(255) NOT NULL,
 tipo CHAR(10),
-ativo BOOLEAN DEFAULT TRUE
+ativo CHAR (1)
 );
 
 CREATE TABLE SUBCATEGORIAS(
 id_subcategoria SERIAL PRIMARY KEY,
 nome VARCHAR(100) NOT NULL,
-ativo BOOLEAN DEFAULT TRUE,
+ativo CHAR (1),
 id_categoria INT,
 FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
@@ -29,7 +29,7 @@ CREATE TABLE TRANSACOES(
 id_transacao SERIAL PRIMARY KEY,
 valor NUMERIC(12,2) NOT NULL,
 descricao TEXT,
-data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+data_registro DATE,
 data_vencimento DATE,
 data_pagamento DATE,
 tipo CHAR(1),

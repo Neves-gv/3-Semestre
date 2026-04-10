@@ -80,7 +80,32 @@ const documentacao = {
                     500: { description: "Erro interno no servidor" }
                 }
             },
-
+            patch: {
+                tags: ['Usuários'],
+                summary: 'Atualizar usuário parcialmente',
+                parameters: [
+                    {
+                        name: "id_usuario",
+                        in: "path",
+                        required: true,
+                        schema: { type: 'integer', example: 1 }
+                    }
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Atualizar_Usuario" }
+                        }
+                    }
+                },
+                responses: {
+                    200: { description: "Usuário atualizado com sucesso!" },
+                    400: { description: "Nenhum campo a atualizar" },
+                    404: { description: "Usuário não encontrado" },
+                    500: { description: "Erro interno no servidor" }
+                }
+            },
             delete: {
                 tags: ['Usuários'],
                 summary: 'Remover usuário',
@@ -299,14 +324,14 @@ const documentacao = {
         "/transacao/tipo/{tipo}": {
             get: {
                 tags: ["transacao"],
-                summary: "Listar transações por categoria",
+                summary: "Listar transações por tipo",
                 parameters: [
                     {
-                        name: "id_categoria",
-                        in: "query",
+                        name: "tipo",
+                        in: "path",
                         required: true,
-                        descricao: "Tipo de transação (E - Entrada, S - Saída)",
-                        schema: { type: "string", enum: ["E", "S"], example: "S" }
+                        description: "Tipo de transação (true - Entrada, false - Saída)",
+                        schema: { type: "boolean", example: true }
                     },
                 ],
                 responses: {
@@ -329,9 +354,9 @@ const documentacao = {
                 parameters: [
                     {
                         name: "id_categoria",
-                        in: "query",
+                        in: "path",
                         required: true,
-                        descricao: "ID da categoria",
+                        description: "ID da categoria",
                         schema: { type: "integer", example: 1 }
                     },
                 ],
@@ -352,6 +377,15 @@ const documentacao = {
             get: {
                 tags: ["transacao"],
                 summary: "Listar transações por subcategoria",
+                parameters: [
+                    {
+                        name: "id_subcategoria",
+                        in: "path",
+                        required: true,
+                        description: "ID da subcategoria",
+                        schema: { type: "integer", example: 1 }
+                    },
+                ],
                 responses: {
                     200: {
                         description: "Transações listadas com sucesso",
@@ -409,6 +443,39 @@ const documentacao = {
                 }
             }
         },
+        "/transacao/periodo": {
+            get: {
+                tags: ["transacao"],
+                summary: "Listar transações por periodo",
+                parameters: [
+                    {
+                        name: "data_inicio",
+                        in: "query",
+                        required: true,
+                        description: "Data de inicio",
+                        schema: { type: "string", format: "date", example: "2026-04-01" }
+                    },
+                    {
+                        name: "data_fim",
+                        in: "query",
+                        required: true,
+                        description: "Data de fim",
+                        schema: { type: "string", format: "date", example: "2026-04-30" }
+                    }
+                ],
+                responses: {
+                    200: {
+                        description: "Transações listadas com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
+                            }
+                        }
+                    },
+                    500: { description: "Erro interno no servidor" }
+                }
+            }
+        },
     },
 
     components: {
@@ -427,7 +494,8 @@ const documentacao = {
                 properties: {
                     nome: { type: "string", example: "Ricardo" },
                     email: { type: "string", example: "ricardo@email.com" },
-                    senha: { type: "string", example: "123456" }
+                    senha: { type: "string", example: "123456" },
+                    tipo_usuario: { type: "string", example: "Admin" }
                 }
             },
             Atualizar_Usuario: {
@@ -435,7 +503,8 @@ const documentacao = {
                 properties: {
                     nome: { type: "string", example: "Nina" },
                     email: { type: "string", example: "nina@email.com" },
-                    senha: { type: "string", example: "123456" }
+                    senha: { type: "string", example: "123456" },
+                    tipo_usuario: { type: "string", example: "Comum" }
                 }
             },
             Login_Usuario: {
@@ -525,7 +594,6 @@ const documentacao = {
                 type: "object",
                 properties: {
                     id_transacao: { type: "integer", example: 1 },
-                    id_usuario: { type: "integer", example: 1 },
                     id_categoria: { type: "integer", example: 1 },
                     id_subcategoria: { type: "integer", example: 1 },
                     tipo: { type: "string", enum: ["E", "D"], example: "E" },
@@ -538,21 +606,16 @@ const documentacao = {
                 type: "object",
                 required: ["id_categoria", "id_subcategoria", "valor", "data", "descricao"],
                 properties: {
-                    id_transacao: { type: "integer", example: 1 },
+                    id_categoria: { type: "integer", example: 1 },
+                    id_subcategoria: { type: "integer", example: 1 },
                     valor: { type: "number", format: "decimal", example: 150.75 },
                     descricao: { type: "string", example: "Compra no supermercado" },
-                    data_registro: { type: "string", format: "date", example: "2026-04-09" },
-                    data_vencimento: { type: "string", format: "date", example: "2026-04-09" },
-                    data_pagamento: { type: "string", format: "date", example: "2026-04-09" },
-                    tipo: { type: "boolean", example: true },
-                    id_categoria: { type: "integer", example: 1 },
-                    id_subcategoria: { type: "integer", example: 1 }
+                    data: { type: "string", format: "date", example: "2026-04-09" }
                 }
             },
             Atualizar_Transacao: {
                 type: "object",
                 properties: {
-                    id_usuario: { type: "integer", example: 1 },
                     id_categoria: { type: "integer", example: 1 },
                     id_subcategoria: { type: "integer", example: 1 },
                     valor: { type: "number", format: "decimal", example: 150.75 },
@@ -564,6 +627,20 @@ const documentacao = {
                 type: "object",
                 properties: {
                     id_transacao: { type: "integer", example: 1 }
+                }
+            },
+            Listar_Transacao_Periodo: {
+                type: "object",
+                properties: {
+                    id_transacao: { type: "integer", example: 1 },
+                    valor: { type: "number", format: "decimal", example: 150.75 },
+                    descricao: { type: "string", example: "Compra no supermercado" },
+                    data_registro: { type: "string", format: "date", example: "2026-04-09" },
+                    data_vencimento: { type: "string", format: "date", example: "2026-04-09" },
+                    data_pagamento: { type: "string", format: "date", example: "2026-04-09" },
+                    tipo: { type: "boolean", example: true },
+                    id_categoria: { type: "integer", example: 1 },
+                    id_subcategoria: { type: "integer", example: 1 }
                 }
             }
         }

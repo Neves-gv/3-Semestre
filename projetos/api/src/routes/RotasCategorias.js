@@ -16,6 +16,23 @@ router.get('/categoria', async (req, res) => {
     }
 });
 
+// CADASTRAR CATEGORIA
+router.post('/categoria', async (req, res) => {
+    const { nome, descricao, cor, icone, tipo } = req.body;
+    try {
+        const comando = `
+            INSERT INTO CATEGORIAS (nome, descricao, cor, icone, tipo) 
+            VALUES ($1, $2, $3, $4, $5) RETURNING *
+        `;
+        const valores = [nome, descricao, cor, icone, tipo];
+        const resultado = await BD.query(comando, valores);
+        return res.status(201).json(resultado.rows[0]);
+    } catch (error) {
+        console.error('Erro ao cadastrar categoria', error.message);
+        return res.status(500).json({ error: 'Erro ao cadastrar categoria' });
+    }
+});
+
 //  ATUALIZAR CATEGORIA
 router.put('/categoria/:id_categoria', async (req, res) => {
 

@@ -18,13 +18,13 @@ router.get('/usuarios', async (req, res) => {
 
 // ================= CADASTRAR USUÁRIO =================
 router.post('/usuarios', async (req, res) => {
-    const { nome, email, senha, tipo_acesso } = req.body;
+    const { nome, email, senha, tipo_usuario } = req.body;
     try {
         const saltRounds = 10;
         const senhaCriptografada = await bcrypt.hash(senha, saltRounds);
 
-        const comando = `INSERT INTO USUARIOS(nome, email, senha, tipo_acesso) VALUES($1, $2, $3, $4)`;
-        const valores = [nome, email, senhaCriptografada, tipo_acesso];
+        const comando = `INSERT INTO USUARIOS(nome, email, senha, tipo_usuario) VALUES($1, $2, $3, $4)`;
+        const valores = [nome, email, senhaCriptografada, tipo_usuario];
 
         await BD.query(comando, valores);
         return res.status(201).json("Usuário cadastrado.");
@@ -37,7 +37,7 @@ router.post('/usuarios', async (req, res) => {
 // ================= ATUALIZAR USUÁRIO  =================
 router.put('/usuarios/:id_usuario', async (req, res) => {
     const { id_usuario } = req.params;
-    const { nome, email, senha, tipo_acesso } = req.body;
+    const { nome, email, senha, tipo_usuario } = req.body;
     try {
         const verificarUsuario = await BD.query(
             `SELECT * FROM USUARIOS WHERE id_usuario = $1 AND ativo = true`, 
@@ -48,8 +48,8 @@ router.put('/usuarios/:id_usuario', async (req, res) => {
         }
 
         const senhaCriptografada = await bcrypt.hash(senha, 10);
-        const comando = `UPDATE USUARIOS SET nome = $1, email = $2, senha = $3, tipo_acesso = $4 WHERE id_usuario = $5`;
-        const valores = [nome, email, senhaCriptografada, tipo_acesso, id_usuario];
+        const comando = `UPDATE USUARIOS SET nome = $1, email = $2, senha = $3, tipo_usuario = $4 WHERE id_usuario = $5`;
+        const valores = [nome, email, senhaCriptografada, tipo_usuario, id_usuario];
         await BD.query(comando, valores);
 
         return res.status(200).json('Usuario foi atualizado!');
@@ -62,7 +62,7 @@ router.put('/usuarios/:id_usuario', async (req, res) => {
 // ================= PATCH =================
 router.patch('/usuarios/:id_usuario', async (req, res) => {
     const { id_usuario } = req.params;
-    const { nome, email, senha, tipo_acesso } = req.body;
+    const { nome, email, senha, tipo_usuario } = req.body;
 
     try {
         const verificarUsuario = await BD.query(`SELECT * FROM USUARIOS WHERE id_usuario = $1`, [id_usuario]);
@@ -82,7 +82,7 @@ router.patch('/usuarios/:id_usuario', async (req, res) => {
             valores.push(senhaCriptografada); 
             contador++; 
         }
-        if (tipo_acesso !== undefined) { campos.push(`tipo_acesso = $${contador}`); valores.push(tipo_acesso); contador++; }
+        if (tipo_usuario !== undefined) { campos.push(`tipo_usuario = $${contador}`); valores.push(tipo_usuario); contador++; }
 
         if (campos.length === 0) {
             return res.status(400).json({ message: "Nenhum campo a atualizar" })
