@@ -2,15 +2,16 @@ import { useState } from 'react'
 import { View, Text, Image, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native'
 import Logo from '../assets/logo.png'
 import { LinearGradient } from 'expo-linear-gradient'
+import Hr from './Hr'
 
 const Aula02 = () => {
     const [nome, setNome] = useState('')
 
     return (
         <View>
-            <Text>-----------------------------------</Text>
             <Text>Aula 02 - Componentes Básicos</Text>
             <Text>Conhecendo os principais componentes do React Native</Text>
+            <Hr />
             {/* Inserindo imagem da internet */}
             <Image
                 source={{ uri: 'https://picsum.photos/300/200' }}

@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { BD } from "../../db.js";
 import bcrypt from 'bcrypt';
-
+import { autenticarToken } from "../middlewares/autenticacao.js";
+import jst from 'jsonwebtoken';
 const router = Router();
 
 // ================= LISTAR USUÁRIOS =================
-router.get('/usuarios', async (req, res) => {
+router.get('/usuarios', autenticarToken, async (req, res) => {
     try {
         const query = `SELECT * FROM usuarios ORDER BY id_usuario`;
         const usuarios = await BD.query(query);
@@ -40,7 +41,7 @@ router.put('/usuarios/:id_usuario', async (req, res) => {
     const { nome, email, senha, tipo_usuario } = req.body;
     try {
         const verificarUsuario = await BD.query(
-            `SELECT * FROM USUARIOS WHERE id_usuario = $1 AND ativo = true`, 
+            `SELECT * FROM USUARIOS WHERE id_usuario = $1 AND ativo = true`,
             [id_usuario]
         );
         if (verificarUsuario.rows.length === 0) {
@@ -76,11 +77,11 @@ router.patch('/usuarios/:id_usuario', async (req, res) => {
 
         if (nome !== undefined) { campos.push(`nome = $${contador}`); valores.push(nome); contador++; }
         if (email !== undefined) { campos.push(`email = $${contador}`); valores.push(email); contador++; }
-        if (senha !== undefined) { 
+        if (senha !== undefined) {
             const senhaCriptografada = await bcrypt.hash(senha, 10);
-            campos.push(`senha = $${contador}`); 
-            valores.push(senhaCriptografada); 
-            contador++; 
+            campos.push(`senha = $${contador}`);
+            valores.push(senhaCriptografada);
+            contador++;
         }
         if (tipo_usuario !== undefined) { campos.push(`tipo_usuario = $${contador}`); valores.push(tipo_usuario); contador++; }
 
@@ -130,8 +131,19 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Senha incorreta' });
         }
 
+
+        const SECRET_KEY = 'sua_chave_secreta';
+        //Gerando token para retornar e ser usado
+        const token = jst.sign(
+            { id_usuario: usuario.id_usuario, email: usuario.email },
+            SECRET_KEY,
+            // {expiresIn: '15m'}//tempo para expirar o token
+        )
+
+
         return res.status(200).json({
             message: 'Login realizado',
+            token: token,
             usuario: { id_usuario: usuario.id_usuario, nome: usuario.nome }
         });
     } catch (error) {
