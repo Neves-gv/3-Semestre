@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Text, View, TextInput, TouchableOpacity, FlatList, Image, StatusBar } from 'react-native'
+import { Text, View, TextInput, TouchableOpacity, FlatList, Image, StatusBar, RefreshControl } from 'react-native'
 import Estilos, { corPrincipal, corPlaceholder } from './Estilos'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { corSecundaria } from './Estilos';
@@ -40,7 +40,7 @@ const ListaCompras = () => {
         return (
             <TouchableOpacity style={Estilos.botaoItem} onPress={() => { botaoAtualizar(item) }}>
                 <Text style={item.comprado == false ? Estilos.textoBotaoItem : Estilos.textoBotaoItemComprado}> {item.produto} </Text>
-                
+
                 {/* Ícone agora dentro de um TouchableOpacity para o clique funcionar */}
                 <TouchableOpacity onPress={() => { botaoExcluir(item.id) }}>
                     <MaterialIcons name="delete-sweep" size={24} color={corPrincipal} />
@@ -50,16 +50,19 @@ const ListaCompras = () => {
     }
     async function botaoAdicionar() {
         if (item.trim() === '') return; // Evita adicionar itens vazios
-        
+
         const novoItem = { produto: item, comprado: false }
 
         // Adicionar documento no firebase
         await addDoc(collection(firestore, 'comprasNeves'), novoItem)
-        
+
         // Chamamos buscarDados() para atualizar a lista com o ID correto do Firebase
         buscarDados()
         setItem('')
     }
+
+    const [atualizando, setAtualizando] = useState(false)
+
     return (
         <View style={Estilos.conteudo}>
             <StatusBar backgroundColor={corPrincipal} barStyle='light-content' />
@@ -98,6 +101,8 @@ const ListaCompras = () => {
                     data={listaCompras}
                     renderItem={exibirItens}
                     keyExtractor={item => item.id}
+                    refreshControl={
+                        <RefreshControl refreshing={atualizando} onRefresh={buscarDados} />}
                 />
 
             </View>
