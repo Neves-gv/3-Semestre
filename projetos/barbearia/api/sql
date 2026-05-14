@@ -1,0 +1,23 @@
+CREATE TABLE USUARIOS(
+id_usuario SERIAL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+email VARCHAR(150) NOT NULL UNIQUE,
+senha VARCHAR(255) NOT NULL,
+tipo VARCHAR(20)
+);
+
+CREATE TABLE SERVICOS(
+id_servico SERIAL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+preco INT,
+descricao TEXT
+);
+
+CREATE TABLE AGENDAMENTOS(
+id_agendamento SERIAL PRIMARY KEY,
+data_hora DATE,
+id_usuario INT,
+id_servico INT,
+FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+FOREIGN KEY (id_servico) REFERENCES servicos(id_servico)
+);
