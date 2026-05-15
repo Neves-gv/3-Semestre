@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { BD } from "../../db.js";
 
+import { autenticarToken } from "../middlewares/autenticacao.js";
+
 const router = Router();
 
+//Listar Transações
 router.get('/transacoes', async (req, res) => {
     try {
         const comando = `SELECT t.id_transacao, t.valor, t.descricao, TO_CHAR(t.data_registro, 'DD/MM/YYYY') AS data_registro,
@@ -24,11 +27,11 @@ router.get('/transacoes', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+//Listar Transações po tipo
 router.get('/transacoes/tipo/:tipo', async (req, res) => {
     try {
         const { tipo } = req.params;
-        if(tipo !== 'E' && tipo !== 'S') {
+        if (tipo !== 'E' && tipo !== 'S') {
             return res.status(400).json({ message: "Tipo inválido. Use E para Entrada ou S para Saída." });
         }
         const comando = `SELECT t.id_transacao, t.valor, t.descricao, TO_CHAR(t.data_registro, 'DD/MM/YYYY') AS data_registro,
@@ -50,7 +53,7 @@ router.get('/transacoes/tipo/:tipo', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
-
+//Listar Transações por categoria
 router.get('/transacoes/categoria/:id_categoria', async (req, res) => {
     try {
         const { id_categoria } = req.params;
@@ -73,7 +76,7 @@ router.get('/transacoes/categoria/:id_categoria', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+//Listar Transações subcategoria
 router.get('/transacoes/subcategoria/:id_subcategoria', async (req, res) => {
     try {
         const { id_subcategoria } = req.params;
@@ -96,7 +99,7 @@ router.get('/transacoes/subcategoria/:id_subcategoria', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+// CADASTRAR Transações
 router.post('/transacoes', async (req, res) => {
     try {
         const { valor, descricao, data_vencimento, data_pagamento, tipo, id_subcategoria, id_categoria } = req.body;
@@ -115,7 +118,7 @@ router.post('/transacoes', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+//Atualizar
 router.put('/transacoes/:id_transacao', async (req, res) => {
     try {
         const { id_transacao } = req.params;
@@ -147,7 +150,7 @@ router.put('/transacoes/:id_transacao', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+//Deletar
 router.delete('/transacoes/:id_transacao', async (req, res) => {
     try {
         const { id_transacao } = req.params;
@@ -167,7 +170,7 @@ router.delete('/transacoes/:id_transacao', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
+//Listar Transações periodo
 router.get('/transacoes/periodo', async (req, res) => {
     const { inicio, fim } = req.query;
     if (!inicio || !fim) {
@@ -187,7 +190,7 @@ router.get('/transacoes/periodo', async (req, res) => {
         LEFT JOIN SUBCATEGORIAS s ON t.id_subcategoria = s.id_subcategoria 
         WHERE t.data_registro BETWEEN TO_DATE($1, 'DD/MM/YYYY') AND TO_DATE($2, 'DD/MM/YYYY') 
         ORDER BY t.data_registro DESC`;
-        
+
         const transacoes = await BD.query(comando, [inicio, fim]);
 
         return res.status(200).json(transacoes.rows);
@@ -196,10 +199,10 @@ router.get('/transacoes/periodo', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
-router.get('/transacoes/total', async (req, res) => {
+//Todas as transações
+router.get('/transacoes/total', autenticarToken, async (req, res) => {
     const { tipo } = req.query;
-    if(!tipo || (tipo !== 'E' && tipo !== 'S')) {
+    if (!tipo || (tipo !== 'E' && tipo !== 'S')) {
         return res.status(400).json({ message: "Parâmetro 'tipo' inválido ou ausente" });
     }
     try {
@@ -217,5 +220,34 @@ router.get('/transacoes/total', async (req, res) => {
         return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+//Endpoints do Dashbord
 
+//Transações por categoria
+router.get('/dashboard/categoria', autenticarToken, async (req, res) => {
+    try {
+        const comando = `SELECT c.nome, SUM(t.valor)as total FROM transacoes t
+        INNER JOIN categorias c ON t.id_categoria = c.id_categoria
+        WHERE t.tipo = 'S'
+        GROUP BY c.nome ORDER BY total DESC
+        `
+        const resultado = await BD.query(comando)
+        return res.status(200).json(resultado.rows)
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+})
+//Transações por Subcatgoria
+router.get('/dashboard/subcategoria', autenticarToken, async (req, res) => {
+    try {
+        const comando = `SELECT s.nome, SUM(t.valor)as total FROM transacoes t
+        INNER JOIN subcategorias s ON t.id_subcategoria = s.id_subcategoria
+        WHERE t.tipo = 'S'
+        GROUP BY s.nome ORDER BY total DESC
+        `
+        const resultado = await BD.query(comando)
+        return res.status(200).json(resultado.rows)
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+})
 export default router;

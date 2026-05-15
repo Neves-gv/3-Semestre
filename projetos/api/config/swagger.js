@@ -701,20 +701,20 @@ const documentacao = {
         tags: ["Transações"],
         summary: "Listar todas as transações",
         description: "Retorna todos os valores com base no tipo infomado(E/S) ",
-        // security: [{ bearerAuth: [] }],
-        // parameters: [
-        //   {
-        //     name: "tipo",
-        //     in: "query",
-        //     required: true,
-        //     description: "Tipo de transação: E para Entradas ou S para Saídas",
-        //     schema: {
-        //       type: "string",
-        //       enum: ["E", "S"],
-        //       example: "E"
-        //     }
-        //   }
-        // ],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "tipo",
+            in: "query",
+            required: true,
+            description: "Tipo de transação: E para Entradas ou S para Saídas",
+            schema: {
+              type: "string",
+              enum: ["E", "S"],
+              example: "E"
+            }
+          }
+        ],
         responses: {
           200: {
             description: "Dados obtidos com sucesso!",
@@ -730,172 +730,254 @@ const documentacao = {
           500: { description: "Erro interno do servidor" }
         }
       }
-    }
+    },
+    "/dashboard/categoria": {
+      get: {
+        tags: ["Dashboerd"],
+        summary: "Total gosto categoria",
+        description: "Retorna a soma das saidas agrupadas por categoria para o grafico ",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "tipo",
+            in: "query",
+            required: true,
+            description: "Tipo de transação: E para Entradas ou S para Saídas",
+            schema: {
+              type: "string",
+              enum: ["E", "S"],
+              example: "E"
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "obejct",
+                    properties: {
+                      nome: { type: "string", example: "Alimentação" },
+                      total: { type: "number", example: 1250.00 }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/dashboard/subcategoria": {
+      get: {
+        tags: ["Dashboerd"],
+        summary: "Total gosto subcategoria",
+        description: "Retorna a soma das saidas agrupadas por subcategoria para o grafico ",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "tipo",
+            in: "query",
+            required: true,
+            description: "Tipo de transação: E para Entradas ou S para Saídas",
+            schema: {
+              type: "string",
+              enum: ["E", "S"],
+              example: "E"
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "obejct",
+                    properties: {
+                      nome: { type: "string", example: "Alimentação" },
+                      total: { type: "number", example: 1250.00 }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
   },
 
   components: {
     securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          description: 'Insira o token JWT obtido no login'
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Insira o token JWT obtido no login'
+      }
+    },
+    schemas: {
+      Listar_Usuarios: {
+        type: 'object',
+        properties: {
+          id: { type: "integer", example: 1 },
+          nome: { type: "string", example: "Ricardo" },
+          email: { type: "string", example: "ricardo@email.com" }
         }
       },
-      schemas: {
-        Listar_Usuarios: {
-          type: 'object',
-          properties: {
-            id: { type: "integer", example: 1 },
-            nome: { type: "string", example: "Ricardo" },
-            email: { type: "string", example: "ricardo@email.com" }
-          }
-        },
-        Cadastrar_Usuario: {
-          type: 'object',
-          properties: {
-            nome: { type: "string", example: "Ricardo" },
-            email: { type: "string", example: "ricardo2@email.com" },
-            senha: { type: "string", example: "Senha123" }
-          }
-        },
-        Atualizar_Usuario: {
-          type: 'object',
-          required: ["nome", "email", "senha"],
-          properties: {
-            nome: { type: "string", example: "Nina" },
-            email: { type: "string", example: "nina@email.com" },
-            senha: { type: "string", example: "Senha123" }
-          }
-        },
-        Login_Usuario: {
-          type: 'object',
-          required: ['email', 'senha'],
-          properties: {
-            email: { type: "string", example: "ricardo2@email.com" },
-            senha: { type: "string", example: "Senha123" }
-          }
-        },
-        Resposta_Login: {
-          type: 'object',
-          properties: {
-            message: { type: 'string', example: 'Login realizado com sucesso' },
-            token: { type: 'string', description: 'Token JWT gerado', example: 'eyJhbGciOiJIUzI1Ni...' },
-            usuario: {
-              type: 'object',
-              properties: {
-                id_usuario: { type: "integer", example: 1 },
-                nome: { type: "string", example: 'Ricardo' },
-                email: { type: "string", example: "ricardo@email.com" }
-              }
-            }
-          }
-        },
-        Listar_Categorias: {
-          type: "object",
-          properties: {
-            id_categoria: { type: "integer", example: 1 },
-            nome: { type: "string", example: "Saúde" },
-            descricao: { type: "string", example: "Gastos com saúde" },
-            tipo: { type: "string", enum: ["E", "S"], example: "S" },
-            cor: { type: "string", example: "#FF5733" },
-            icone: { type: "string", example: "heart" },
-            ativo: { type: "boolean", example: true }
-          }
-        },
-        Cadastrar_Categoria: {
-          type: "object",
-          required: ["nome", "tipo"],
-          properties: {
-            nome: { type: "string", example: "Saúde" },
-            descricao: { type: "string", example: "Gastos com saúde" },
-            tipo: { type: "string", enum: ["E", "S"], example: "S" },
-            cor: { type: "string", example: "#FF5733" },
-            icone: { type: "string", example: "heart" }
-          }
-        },
-        Patch_Categoria: {
-          type: "object",
-          properties: {
-            nome: { type: "string", example: "Saúde" },
-            descricao: { type: "string", example: "Gastos com saúde" },
-            tipo: { type: "string", enum: ["E", "S"], example: "S" },
-            cor: { type: "string", example: "#FF5733" },
-            icone: { type: "string", example: "heart" }
-          }
-        },
-        Listar_Subcategorias: {
-          type: "object",
-          properties: {
-            id_subcategoria: { type: "integer", example: 1 },
-            nome: { type: "string", example: "Consulta Médica" },
-            ativo: { type: "boolean", example: true },
-            id_categoria: { type: "integer", example: 2 }
-          }
-        },
-        Cadastrar_Subcategoria: {
-          type: "object",
-          required: ["nome", "id_categoria"],
-          properties: {
-            nome: { type: "string", example: "Consulta Médica" },
-            id_categoria: { type: "integer", example: 2 }
-          }
-        },
-        Atualizar_Subcategoria: {
-          type: "object",
-          required: ["nome", "id_categoria"],
-          properties: {
-            nome: { type: "string", example: "Exame de Sangue" },
-            id_categoria: { type: "integer", example: 2 }
-          }
-        },
-        Patch_Subcategoria: {
-          type: "object",
-          properties: {
-            nome: { type: "string", example: "Exame de Sangue" },
-            id_categoria: { type: "integer", example: 3 }
-          }
-        },
-        Listar_Transacoes: {
-          type: "object",
-          properties: {
-            id_transacao: { type: "integer", example: 1 },
-            valor: { type: "number", example: 150.00 },
-            descricao: { type: "string", example: "Consulta médica" },
-            data_registro: { type: "string", example: "15/01/2024 10:30:00" },
-            data_vencimento: { type: "string", example: "20/01/2024" },
-            data_pagamento: { type: "string", example: "18/01/2024" },
-            tipo: { type: "string", enum: ["E", "S"], example: "S" },
-            id_categoria: { type: "integer", example: 2 },
-            nome_categoria: { type: "string", example: "Saúde" },
-            id_subcategoria: { type: "integer", example: 5 },
-            nome_subcategoria: { type: "string", example: "Consulta Médica" }
-          }
-        },
-        Cadastrar_Transacao: {
-          type: "object",
-          required: ["valor", "tipo"],
-          properties: {
-            valor: { type: "number", example: 150.00 },
-            descricao: { type: "string", example: "Consulta médica" },
-            data_vencimento: { type: "string", example: "20/01/2024" },
-            data_pagamento: { type: "string", example: "18/01/2024" },
-            tipo: { type: "string", enum: ["E", "S"], example: "S" },
-            id_subcategoria: { type: "integer", example: 5 },
-            id_categoria: { type: "integer", example: 2 }
-          }
-        },
-        Total_Transacoes: {
-          type: "object",
-          properties: {
-            total: {
-              type: "number",
-              format: "float",
-              example: 1550.10,
-              description: "Soma total dos valores das transações filtradas"
+      Cadastrar_Usuario: {
+        type: 'object',
+        properties: {
+          nome: { type: "string", example: "Ricardo" },
+          email: { type: "string", example: "ricardo2@email.com" },
+          senha: { type: "string", example: "Senha123" }
+        }
+      },
+      Atualizar_Usuario: {
+        type: 'object',
+        required: ["nome", "email", "senha"],
+        properties: {
+          nome: { type: "string", example: "Nina" },
+          email: { type: "string", example: "nina@email.com" },
+          senha: { type: "string", example: "Senha123" }
+        }
+      },
+      Login_Usuario: {
+        type: 'object',
+        required: ['email', 'senha'],
+        properties: {
+          email: { type: "string", example: "ricardo2@email.com" },
+          senha: { type: "string", example: "Senha123" }
+        }
+      },
+      Resposta_Login: {
+        type: 'object',
+        properties: {
+          message: { type: 'string', example: 'Login realizado com sucesso' },
+          token: { type: 'string', description: 'Token JWT gerado', example: 'eyJhbGciOiJIUzI1Ni...' },
+          usuario: {
+            type: 'object',
+            properties: {
+              id_usuario: { type: "integer", example: 1 },
+              nome: { type: "string", example: 'Ricardo' },
+              email: { type: "string", example: "ricardo@email.com" }
             }
           }
         }
+      },
+      Listar_Categorias: {
+        type: "object",
+        properties: {
+          id_categoria: { type: "integer", example: 1 },
+          nome: { type: "string", example: "Saúde" },
+          descricao: { type: "string", example: "Gastos com saúde" },
+          tipo: { type: "string", enum: ["E", "S"], example: "S" },
+          cor: { type: "string", example: "#FF5733" },
+          icone: { type: "string", example: "heart" },
+          ativo: { type: "boolean", example: true }
+        }
+      },
+      Cadastrar_Categoria: {
+        type: "object",
+        required: ["nome", "tipo"],
+        properties: {
+          nome: { type: "string", example: "Saúde" },
+          descricao: { type: "string", example: "Gastos com saúde" },
+          tipo: { type: "string", enum: ["E", "S"], example: "S" },
+          cor: { type: "string", example: "#FF5733" },
+          icone: { type: "string", example: "heart" }
+        }
+      },
+      Patch_Categoria: {
+        type: "object",
+        properties: {
+          nome: { type: "string", example: "Saúde" },
+          descricao: { type: "string", example: "Gastos com saúde" },
+          tipo: { type: "string", enum: ["E", "S"], example: "S" },
+          cor: { type: "string", example: "#FF5733" },
+          icone: { type: "string", example: "heart" }
+        }
+      },
+      Listar_Subcategorias: {
+        type: "object",
+        properties: {
+          id_subcategoria: { type: "integer", example: 1 },
+          nome: { type: "string", example: "Consulta Médica" },
+          ativo: { type: "boolean", example: true },
+          id_categoria: { type: "integer", example: 2 }
+        }
+      },
+      Cadastrar_Subcategoria: {
+        type: "object",
+        required: ["nome", "id_categoria"],
+        properties: {
+          nome: { type: "string", example: "Consulta Médica" },
+          id_categoria: { type: "integer", example: 2 }
+        }
+      },
+      Atualizar_Subcategoria: {
+        type: "object",
+        required: ["nome", "id_categoria"],
+        properties: {
+          nome: { type: "string", example: "Exame de Sangue" },
+          id_categoria: { type: "integer", example: 2 }
+        }
+      },
+      Patch_Subcategoria: {
+        type: "object",
+        properties: {
+          nome: { type: "string", example: "Exame de Sangue" },
+          id_categoria: { type: "integer", example: 3 }
+        }
+      },
+      Listar_Transacoes: {
+        type: "object",
+        properties: {
+          id_transacao: { type: "integer", example: 1 },
+          valor: { type: "number", example: 150.00 },
+          descricao: { type: "string", example: "Consulta médica" },
+          data_registro: { type: "string", example: "15/01/2024 10:30:00" },
+          data_vencimento: { type: "string", example: "20/01/2024" },
+          data_pagamento: { type: "string", example: "18/01/2024" },
+          tipo: { type: "string", enum: ["E", "S"], example: "S" },
+          id_categoria: { type: "integer", example: 2 },
+          nome_categoria: { type: "string", example: "Saúde" },
+          id_subcategoria: { type: "integer", example: 5 },
+          nome_subcategoria: { type: "string", example: "Consulta Médica" }
+        }
+      },
+      Cadastrar_Transacao: {
+        type: "object",
+        required: ["valor", "tipo"],
+        properties: {
+          valor: { type: "number", example: 150.00 },
+          descricao: { type: "string", example: "Consulta médica" },
+          data_vencimento: { type: "string", example: "20/01/2024" },
+          data_pagamento: { type: "string", example: "18/01/2024" },
+          tipo: { type: "string", enum: ["E", "S"], example: "S" },
+          id_subcategoria: { type: "integer", example: 5 },
+          id_categoria: { type: "integer", example: 2 }
+        }
+      },
+      Total_Transacoes: {
+        type: "object",
+        properties: {
+          total: {
+            type: "number",
+            format: "float",
+            example: 1550.10,
+            description: "Soma total dos valores das transações filtradas"
+          }
+        }
+      }
     }
   }
 };

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { BD } from "../../db.js";
 import bcrypt from 'bcrypt';
 import { autenticarToken } from "../middlewares/autenticacao.js";
+
 import jst from 'jsonwebtoken';
 const router = Router();
 
