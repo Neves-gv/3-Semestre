@@ -813,8 +813,36 @@ const documentacao = {
         }
       }
     },
+    "/dashboard/maiores-gastos": {
+      get: {
+        tags: ["Dashboerd"],
+        summary: "Top 5 maiores despesas",
+        description: "Retorna as 5 maiores despesas que saiu ",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      descricao: { type: "string", example: "Aluguel do escritorio" },
+                      valor: { type: "number", example: 2500.00 },
+                      data_registro: { type: "string", format: 'date-time', example: "15/5/2026" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    }
   },
-
   components: {
     securitySchemes: {
       bearerAuth: {

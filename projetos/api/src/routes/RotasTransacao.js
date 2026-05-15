@@ -235,7 +235,7 @@ router.get('/dashboard/categoria', autenticarToken, async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-})
+});
 //Transações por Subcatgoria
 router.get('/dashboard/subcategoria', autenticarToken, async (req, res) => {
     try {
@@ -249,5 +249,21 @@ router.get('/dashboard/subcategoria', autenticarToken, async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-})
+});
+
+//5 maiores despesas
+router.get('/dashboard/maiores-gastos', async (req, res) => {
+    try {
+        const comando = `SELECT descricao, valor, TO_CHAR(data_registro,'DD/MM/YYYY') FROM transacoes
+        WHERE tipo = 'S'
+        ORDER BY valor DESC
+        LIMIT 5
+        `
+        const resultado = await BD.query(comando)
+        return res.status(200).json(resultado.rows)
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
 export default router;
