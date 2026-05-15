@@ -33,8 +33,10 @@ data_registro DATE,
 data_vencimento DATE,
 data_pagamento DATE,
 tipo CHAR(1),
+id_usuario INT,
 id_subcategoria INT,
 Id_categoria INT,
+FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
 FOREIGN KEY (id_subcategoria) REFERENCES subcategorias(id_subcategoria)
 );

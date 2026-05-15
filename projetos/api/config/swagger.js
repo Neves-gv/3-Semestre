@@ -1,649 +1,903 @@
 const documentacao = {
-    openapi: '3.0.3',
-    info: {
-        title: 'API de Produtos',
-        description: 'Documentação da API de gerenciamento financeiro - FinanControl',
-        version: '1.0.0'
+  openapi: '3.0.3',
+  info: {
+    title: 'API Financeira - FinanControl',
+    description: 'Documentação da API de gerenciamento financeiro - FinanControl',
+    version: '1.0.0'
+  },
+  servers: [
+    { url: 'http://localhost:3000', description: 'localhost' }
+  ],
+  tags: [
+    { name: 'Usuários', description: 'Operações relacionadas aos usuários' },
+    { name: 'Categorias', description: 'Operações relacionadas as categorias' },
+    { name: 'Subcategorias', description: 'Operações relacionadas as subcategorias' },
+    { name: 'Transações', description: 'Operações relacionadas as transações' }
+  ],
+  paths: {
+    "/usuarios": {
+      get: {
+        tags: ["Usuários"],
+        summary: "Listar todos os usuários",
+        security: [
+          {
+            bearerAuth: []
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "apllication/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: '#/components/schemas/Listar_Usuarios' }
+                }
+              }
+            }
+          }
+        }
+      },
+      post: {
+        tags: ['Usuários'],
+        summary: 'Cadastrar novo usuário',
+        description: "Recebe nome, email, senha para cadastrar novo usuário",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Usuario" }
+            }
+          }
+        },
+        responses: {
+          201: { description: "Usuário cadastrado com sucesso!" },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
     },
-    servers: [
-        { url: 'http://localhost:3000', description: 'Servidor local (localhost)' },
-    ],
-    tags: [
-        { name: 'Usuários', description: 'Operações relacionadas aos usuários' },
-        { name: 'categoria', description: 'Operações relacionadas às categorias' },
-        { name: 'subcategoria', description: 'Operações relacionadas às subcategorias' }
-    ],
-
-    paths: {
-        // ================= USUÁRIOS =================
-        "/usuarios": {
-            get: {
-                tags: ["Usuários"],
-                summary: "Listar todos os usuários",
-                responses: {
-                    200: {
-                        description: "Dados obtidos com sucesso!",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "array",
-                                    items: { $ref: '#/components/schemas/Listar_Usuarios' }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            post: {
-                tags: ['Usuários'],
-                summary: 'Cadastrar novo usuário',
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: {
-                                $ref: "#/components/schemas/Cadastrar_Usuario"
-                            }
-                        }
-                    }
-                },
-                responses: {
-                    201: { description: "Usuário cadastrado com sucesso!" },
-                    500: { description: "Erro interno no servidor" }
-                }
+    "/usuarios/{id_usuario}": {
+      put: {
+        tags: ['Usuários'],
+        summary: 'Atualizar todos os dados do usuário',
+        description: 'Atualiza todos os dados de um usuário existente, é necessário enviar todos os campos',
+        parameters: [
+          {
+            name: "id_usuario",
+            in: "path",
+            required: true,
+            description: "ID do usuário a ser atualizado",
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Atualizar_Usuario" },
+              example: {
+                nome: "Ricardo Santos",
+                email: "ricardo5@sesisp.com",
+                senha: "senhaAtualizada"
+              }
             }
+          }
         },
-
-        "/usuarios/{id_usuario}": {
-            put: {
-                tags: ['Usuários'],
-                summary: 'Atualizar usuário',
-                parameters: [
-                    {
-                        name: "id_usuario",
-                        in: "path",
-                        required: true,
-                        schema: { type: 'integer', example: 1 }
-                    }
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Atualizar_Usuario" }
-                        }
-                    }
-                },
-                responses: {
-                    200: { description: "Usuário atualizado com sucesso!" },
-                    404: { description: "Usuário não encontrado" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            patch: {
-                tags: ['Usuários'],
-                summary: 'Atualizar usuário parcialmente',
-                parameters: [
-                    {
-                        name: "id_usuario",
-                        in: "path",
-                        required: true,
-                        schema: { type: 'integer', example: 1 }
-                    }
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Atualizar_Usuario" }
-                        }
-                    }
-                },
-                responses: {
-                    200: { description: "Usuário atualizado com sucesso!" },
-                    400: { description: "Nenhum campo a atualizar" },
-                    404: { description: "Usuário não encontrado" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            delete: {
-                tags: ['Usuários'],
-                summary: 'Remover usuário',
-                parameters: [
-                    {
-                        name: "id_usuario",
-                        in: "path",
-                        required: true,
-                        schema: { type: 'integer', example: 1 }
-                    }
-                ],
-                responses: {
-                    200: { description: "Usuário removido com sucesso!" },
-                    404: { description: "Usuário não encontrado" },
-                    500: { description: "Erro interno no servidor" }
-                }
+        responses: {
+          201: { description: "Usuário atualizado com sucesso!" },
+          404: {
+            description: "Usuário não encontrado",
+            content: {
+              "application/json": {
+                example: { message: "Usuário não encontrado" }
+              }
             }
-        },
-
-        // ================= LOGIN =================
-        "/login": {
-            post: {
-                tags: ['Autenticação'],
-                summary: 'Realizar Login',
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Login_Usuario" }
-                        }
-                    }
-                },
-                responses: {
-                    200: {
-                        description: "Login realizado com sucesso!",
-                        content: {
-                            "application/json": {
-                                schema: { $ref: "#/components/schemas/Resposta_Login" }
-                            }
-                        }
-                    },
-                    400: { description: "Email e senha obrigatórios" },
-                    401: { description: "Credenciais inválidas" },
-                    500: { description: "Erro interno no servidor" }
-                }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      delete: {
+        tags: ['Usuários'],
+        summary: 'Remover Usuário',
+        description: 'Remove usuário existente pelo ID',
+        parameters: [
+          {
+            name: "id_usuario",
+            in: "path",
+            required: true,
+            description: "ID do usuário a ser removido",
+            schema: { type: 'integer', example: 1 }
+          }
+        ],
+        responses: {
+          200: { description: "Usuário removido com sucesso!" },
+          404: {
+            description: "Usuário não encontrado",
+            content: {
+              "application/json": {
+                example: { message: "Usuário não encontrado" }
+              }
             }
-        },
-
-        // ================= CATEGORIAS =================
-        "/categoria": {
-            get: {
-                tags: ["categoria"],
-                summary: "Listar categorias",
-                responses: {
-                    200: {
-                        description: "Categorias listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Categoria' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            post: {
-                tags: ["categoria"],
-                summary: "Criar categoria",
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Criar_Categoria" }
-                        }
-                    }
-                },
-                responses: {
-                    201: { description: "Categoria criada com sucesso" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-
-        "/categoria/{id_categoria}": {
-            put: {
-                tags: ["categoria"],
-                summary: "Atualizar categoria",
-                parameters: [
-                    { name: "id_categoria", in: "path", required: true, schema: { type: "integer", example: 1 } }
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": { schema: { $ref: "#/components/schemas/Atualizar_Categoria" } }
-                    }
-                },
-                responses: {
-                    200: { description: "Categoria atualizada com sucesso" },
-                    404: { description: "Categoria não encontrada" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-
-            delete: {
-                tags: ["categoria"],
-                summary: "Remover categoria",
-                parameters: [
-                    { name: "id_categoria", in: "path", required: true, schema: { type: "integer", example: 1 } }
-                ],
-                responses: {
-                    200: { description: "Categoria removida com sucesso" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-
-        // ================= SUBCATEGORIAS =================
-        "/subcategoria": {
-            get: {
-                tags: ["subcategoria"],
-                summary: "Listar subcategorias",
-                responses: {
-                    200: {
-                        description: "Subcategorias listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Subcategoria' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            post: {
-                tags: ["subcategoria"],
-                summary: "Criar subcategoria",
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": { schema: { $ref: "#/components/schemas/Criar_Subcategoria" } }
-                    }
-                },
-                responses: {
-                    201: { description: "Subcategoria criada com sucesso" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-
-        "/subcategoria/{id_subcategoria}": {
-            put: {
-                tags: ["subcategoria"],
-                summary: "Atualizar subcategoria",
-                parameters: [
-                    { name: "id_subcategoria", in: "path", required: true, schema: { type: "integer", example: 1 } }
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": { schema: { $ref: "#/components/schemas/Atualizar_Subcategoria" } }
-                    }
-                },
-                responses: {
-                    200: { description: "Subcategoria atualizada com sucesso" },
-                    404: { description: "Subcategoria não encontrada" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            delete: {
-                tags: ["subcategoria"],
-                summary: "Remover subcategoria",
-                parameters: [
-                    { name: "id_subcategoria", in: "path", required: true, schema: { type: "integer", example: 1 } }
-                ],
-                responses: {
-                    200: { description: "Subcategoria removida com sucesso" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-
-        // ================= TRANSAÇÕES =================
-        "/transacao": {
-            get: {
-                tags: ["transacao"],
-                summary: "Listar todas as transações ativas",
-                responses: {
-                    200: {
-                        description: "Transações listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            post: {
-                tags: ["transacao"],
-                summary: "Criar nova transação",
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Criar_Transacao" }
-                        }
-                    }
-                },
-                responses: {
-                    201: { description: "Transação criada com sucesso" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-        "/transacao/tipo/{tipo}": {
-            get: {
-                tags: ["transacao"],
-                summary: "Listar transações por tipo",
-                parameters: [
-                    {
-                        name: "tipo",
-                        in: "path",
-                        required: true,
-                        description: "Tipo de transação (true - Entrada, false - Saída)",
-                        schema: { type: "boolean", example: true }
-                    },
-                ],
-                responses: {
-                    200: {
-                        description: "Transações listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-        "/transacao/categoria/{id_categoria}": {
-            get: {
-                tags: ["transacao"],
-                summary: "Listar transações por categoria",
-                parameters: [
-                    {
-                        name: "id_categoria",
-                        in: "path",
-                        required: true,
-                        description: "ID da categoria",
-                        schema: { type: "integer", example: 1 }
-                    },
-                ],
-                responses: {
-                    200: {
-                        description: "Transações listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-        "/transacao/subcategoria/{id_subcategoria}": {
-            get: {
-                tags: ["transacao"],
-                summary: "Listar transações por subcategoria",
-                parameters: [
-                    {
-                        name: "id_subcategoria",
-                        in: "path",
-                        required: true,
-                        description: "ID da subcategoria",
-                        schema: { type: "integer", example: 1 }
-                    },
-                ],
-                responses: {
-                    200: {
-                        description: "Transações listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-        "/transacao/{id_transacao}": {
-            put: {
-                tags: ["transacao"],
-                summary: "Atualizar transação",
-                parameters: [
-                    {
-                        name: "id_transacao",
-                        in: "path",
-                        required: true,
-                        schema: { type: "integer", example: 1 }
-                    }
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Atualizar_Transacao" }
-                        }
-                    }
-                },
-                responses: {
-                    200: { description: "Transação atualizada com sucesso" },
-                    404: { description: "Transação não encontrada" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            },
-            delete: {
-                tags: ["transacao"],
-                summary: "Remover transação (soft delete)",
-                parameters: [
-                    {
-                        name: "id_transacao",
-                        in: "path",
-                        required: true,
-                        schema: { type: "integer", example: 1 }
-                    }
-                ],
-                responses: {
-                    200: { description: "Transação removida com sucesso" },
-                    404: { description: "Transação não encontrada" },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
-        "/transacao/periodo": {
-            get: {
-                tags: ["transacao"],
-                summary: "Listar transações por periodo",
-                parameters: [
-                    {
-                        name: "data_inicio",
-                        in: "query",
-                        required: true,
-                        description: "Data de inicio",
-                        schema: { type: "string", format: "date", example: "2026-04-01" }
-                    },
-                    {
-                        name: "data_fim",
-                        in: "query",
-                        required: true,
-                        description: "Data de fim",
-                        schema: { type: "string", format: "date", example: "2026-04-30" }
-                    }
-                ],
-                responses: {
-                    200: {
-                        description: "Transações listadas com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: { type: "array", items: { $ref: '#/components/schemas/Listar_Transacao' } }
-                            }
-                        }
-                    },
-                    500: { description: "Erro interno no servidor" }
-                }
-            }
-        },
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
     },
-
-    components: {
-        schemas: {
-            // ===== USUÁRIOS =====
-            Listar_Usuarios: {
-                type: 'object',
-                properties: {
-                    id_usuario: { type: "integer", example: 1 },
-                    nome: { type: "string", example: "Ricardo" },
-                    email: { type: "string", example: "ricardo@email.com" }
-                }
-            },
-            Cadastrar_Usuario: {
-                type: 'object',
-                properties: {
-                    nome: { type: "string", example: "Ricardo" },
-                    email: { type: "string", example: "ricardo@email.com" },
-                    senha: { type: "string", example: "123456" },
-                    tipo_usuario: { type: "string", example: "Admin" }
-                }
-            },
-            Atualizar_Usuario: {
-                type: 'object',
-                properties: {
-                    nome: { type: "string", example: "Nina" },
-                    email: { type: "string", example: "nina@email.com" },
-                    senha: { type: "string", example: "123456" },
-                    tipo_usuario: { type: "string", example: "Comum" }
-                }
-            },
-            Login_Usuario: {
-                type: 'object',
-                properties: {
-                    email: { type: "string", example: "email@email.com" },
-                    senha: { type: "string", example: "123456" }
-                }
-            },
-            Resposta_Login: {
-                type: 'object',
-                properties: {
-                    message: { type: 'string', example: 'Login realizado com sucesso' },
-                    usuario: {
-                        type: 'object',
-                        properties: {
-                            id_usuario: { type: "integer", example: 1 },
-                            nome: { type: "string", example: "Ricardo" }
-                        }
-                    }
-                }
-            },
-
-            // ===== CATEGORIAS =====
-            Listar_Categoria: {
-                type: "object",
-                properties: {
-                    id_categoria: { type: "integer", example: 1 },
-                    nome: { type: "string", example: "Alimentação" },
-                    descricao: { type: "string", example: "Gastos com comida" },
-                    cor: { type: "string", example: "#FF5733" },
-                    icone: { type: "string", example: "food" },
-                    tipo: { type: "string", example: "D" },
-                    ativo: { type: "boolean", example: true }
-                }
-            },
-            Criar_Categoria: {
-                type: "object",
-                required: ["nome", "cor", "icone"],
-                properties: {
-                    nome: { type: "string", example: "Transporte" },
-                    descricao: { type: "string", example: "Gastos com transporte" },
-                    cor: { type: "string", example: "#0000FF" },
-                    icone: { type: "string", example: "car" },
-                    tipo: { type: "string", example: "D" }
-                }
-            },
-            Atualizar_Categoria: {
-                type: "object",
-                properties: {
-                    nome: { type: "string", example: "Lazer" },
-                    descricao: { type: "string", example: "Cinema e viagens" },
-                    cor: { type: "string", example: "#00FF00" },
-                    icone: { type: "string", example: "gamepad" },
-                    tipo: { type: "string", example: "D" }
-                }
-            },
-
-            // ===== SUBCATEGORIAS =====
-            Listar_Subcategoria: {
-                type: "object",
-                properties: {
-                    id_subcategoria: { type: "integer", example: 1 },
-                    nome: { type: "string", example: "Frutas" },
-                    ativo: { type: "boolean", example: true },
-                    id_categoria: { type: "integer", example: 1 }
-                }
-            },
-            Criar_Subcategoria: {
-                type: "object",
-                required: ["nome", "id_categoria"],
-                properties: {
-                    nome: { type: "string", example: "Verduras" },
-                    id_categoria: { type: "integer", example: 1 }
-                }
-            },
-            Atualizar_Subcategoria: {
-                type: "object",
-                properties: {
-                    nome: { type: "string", example: "Doces" },
-                    id_categoria: { type: "integer", example: 1 }
-                }
-            },
-
-            // ===== TRANSAÇÕES =====
-            Listar_Transacao: {
-                type: "object",
-                properties: {
-                    id_transacao: { type: "integer", example: 1 },
-                    id_categoria: { type: "integer", example: 1 },
-                    id_subcategoria: { type: "integer", example: 1 },
-                    tipo: { type: "string", enum: ["E", "D"], example: "E" },
-                    valor: { type: "number", format: "decimal", example: 150.75 },
-                    data: { type: "string", format: "date", example: "2026-04-09" },
-                    descricao: { type: "string", example: "Compra no supermercado" },
-                }
-            },
-            Criar_Transacao: {
-                type: "object",
-                required: ["id_categoria", "id_subcategoria", "valor", "data", "descricao"],
-                properties: {
-                    id_categoria: { type: "integer", example: 1 },
-                    id_subcategoria: { type: "integer", example: 1 },
-                    valor: { type: "number", format: "decimal", example: 150.75 },
-                    descricao: { type: "string", example: "Compra no supermercado" },
-                    data: { type: "string", format: "date", example: "2026-04-09" }
-                }
-            },
-            Atualizar_Transacao: {
-                type: "object",
-                properties: {
-                    id_categoria: { type: "integer", example: 1 },
-                    id_subcategoria: { type: "integer", example: 1 },
-                    valor: { type: "number", format: "decimal", example: 150.75 },
-                    data: { type: "string", format: "date", example: "2026-04-09" },
-                    descricao: { type: "string", example: "Compra no supermercado" }
-                }
-            },
-            Deletar_Transacao: {
-                type: "object",
-                properties: {
-                    id_transacao: { type: "integer", example: 1 }
-                }
-            },
-            Listar_Transacao_Periodo: {
-                type: "object",
-                properties: {
-                    id_transacao: { type: "integer", example: 1 },
-                    valor: { type: "number", format: "decimal", example: 150.75 },
-                    descricao: { type: "string", example: "Compra no supermercado" },
-                    data_registro: { type: "string", format: "date", example: "2026-04-09" },
-                    data_vencimento: { type: "string", format: "date", example: "2026-04-09" },
-                    data_pagamento: { type: "string", format: "date", example: "2026-04-09" },
-                    tipo: { type: "boolean", example: true },
-                    id_categoria: { type: "integer", example: 1 },
-                    id_subcategoria: { type: "integer", example: 1 }
-                }
+    "/login": {
+      post: {
+        tags: ['Usuários'],
+        summary: 'Realizar Login',
+        description: "Autentica um usuário e retorna seus dados",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Login_Usuario" }
             }
+          }
+        },
+        responses: {
+          200: {
+            description: "Login realizado com sucesso!",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Resposta_Login" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/categorias": {
+      get: {
+        tags: ["Categorias"],
+        summary: "Listar todas as categorias ativas",
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Categorias" }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      post: {
+        tags: ["Categorias"],
+        summary: "Cadastrar nova categoria",
+        description: "Recebe nome, descricao, tipo, cor e icone para cadastrar nova categoria",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Categoria" }
+            }
+          }
+        },
+        responses: {
+          201: { description: "Categoria cadastrada com sucesso!" },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/categorias/{id_categoria}": {
+      put: {
+        tags: ["Categorias"],
+        summary: "Atualizar todos os dados da categoria",
+        description: "Atualiza todos os campos de uma categoria existente, é necessário enviar todos os campos",
+        parameters: [
+          {
+            name: "id_categoria",
+            in: "path",
+            required: true,
+            description: "ID da categoria a ser atualizada",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Categoria" }
+            }
+          }
+        },
+        responses: {
+          200: { description: "Categoria atualizada com sucesso!" },
+          404: {
+            description: "Categoria não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Categoria não encontrada" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      patch: {
+        tags: ["Categorias"],
+        summary: "Atualizar parcialmente a categoria",
+        description: "Atualiza apenas os campos enviados no corpo da requisição",
+        parameters: [
+          {
+            name: "id_categoria",
+            in: "path",
+            required: true,
+            description: "ID da categoria a ser atualizada",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Patch_Categoria" }
+            }
+          }
+        },
+        responses: {
+          200: { description: "Categoria atualizada com sucesso!" },
+          400: {
+            description: "Nenhum campo enviado para atualizar",
+            content: {
+              "application/json": {
+                example: { message: "Nenhum campo a atualizar" }
+              }
+            }
+          },
+          404: {
+            description: "Categoria não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Categoria não encontrada" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      delete: {
+        tags: ["Categorias"],
+        summary: "Remover categoria",
+        description: "Desativa uma categoria existente pelo ID (soft delete)",
+        parameters: [
+          {
+            name: "id_categoria",
+            in: "path",
+            required: true,
+            description: "ID da categoria a ser removida",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: { description: "Categoria removida com sucesso!" },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/subcategorias": {
+      get: {
+        tags: ["Subcategorias"],
+        summary: "Listar todas as subcategorias ativas",
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: '#/components/schemas/Listar_Subcategorias' }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      post: {
+        tags: ["Subcategorias"],
+        summary: "Cadastrar nova subcategoria",
+        description: "Recebe nome e id_categoria para cadastrar uma nova subcategoria",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Subcategoria" }
+            }
+          }
+        },
+        responses: {
+          201: { description: "Subcategoria cadastrada com sucesso!" },
+          404: {
+            description: "Categoria não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Categoria não encontrada" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/subcategorias/categoria/{id_categoria}": {
+      get: {
+        tags: ["Subcategorias"],
+        summary: "Listar subcategorias por categoria",
+        description: "Retorna todas as subcategorias ativas vinculadas a uma categoria",
+        parameters: [
+          {
+            name: "id_categoria",
+            in: "path",
+            required: true,
+            description: "ID da categoria para filtrar subcategorias",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: '#/components/schemas/Listar_Subcategorias' }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/subcategorias/{id_subcategoria}": {
+      put: {
+        tags: ["Subcategorias"],
+        summary: "Atualizar todos os dados da subcategoria",
+        description: "Atualiza todos os dados de uma subcategoria existente, é necessário enviar todos os campos",
+        parameters: [
+          {
+            name: "id_subcategoria",
+            in: "path",
+            required: true,
+            description: "ID da subcategoria a ser atualizada",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Atualizar_Subcategoria" }
+            }
+          }
+        },
+        responses: {
+          200: { description: "Subcategoria atualizada com sucesso!" },
+          404: {
+            description: "Subcategoria ou Categoria não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Subcategoria não encontrada" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      patch: {
+        tags: ["Subcategorias"],
+        summary: "Atualizar parcialmente a subcategoria",
+        description: "Atualiza apenas os campos enviados no corpo da requisição",
+        parameters: [
+          {
+            name: "id_subcategoria",
+            in: "path",
+            required: true,
+            description: "ID da subcategoria a ser atualizada",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Patch_Subcategoria" }
+            }
+          }
+        },
+        responses: {
+          200: { description: "Subcategoria atualizada com sucesso!" },
+          400: {
+            description: "Nenhum campo enviado para atualizar",
+            content: {
+              "application/json": {
+                example: { message: "Nenhum campo a atualizar" }
+              }
+            }
+          },
+          404: {
+            description: "Subcategoria não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Subcategoria não encontrada" }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      },
+      delete: {
+        tags: ["Subcategorias"],
+        summary: "Remover subcategoria",
+        description: "Remove (desativa) uma subcategoria existente pelo ID",
+        parameters: [
+          {
+            name: "id_subcategoria",
+            in: "path",
+            required: true,
+            description: "ID da subcategoria a ser removida",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: { description: "Subcategoria removida com sucesso!" },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/transacoes": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar todas as transações",
+        description: "Retorna todas as transações com nome da categoria e subcategoria",
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Transacoes" }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      },
+      post: {
+        tags: ["Transações"],
+        summary: "Cadastrar nova transação",
+        description: "Cadastra uma nova transação financeira",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Transacao" }
+            }
+          }
+        },
+        responses: {
+          201: { description: "Transação cadastrada com sucesso!" },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/transacoes/tipo/{tipo}": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar transações por tipo",
+        description: "Retorna todas as transações filtradas por tipo. E = Entrada, S = Saída",
+        parameters: [
+          {
+            name: "tipo",
+            in: "path",
+            required: true,
+            description: "Tipo da transação (E = Entrada / S = Saída)",
+            schema: { type: "string", enum: ["E", "S"], example: "S" }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Transacoes" }
+                }
+              }
+            }
+          },
+          400: {
+            description: "Tipo inválido",
+            content: {
+              "application/json": {
+                example: { message: "Tipo inválido. Use E para Entrada ou S para Saída." }
+              }
+            }
+          },
+          500: { description: "Erro interno no servidor" }
+        }
+      }
+    },
+    "/transacoes/categoria/{id_categoria}": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar transações por categoria",
+        description: "Retorna todas as transações de uma categoria específica",
+        parameters: [
+          {
+            name: "id_categoria",
+            in: "path",
+            required: true,
+            description: "ID da categoria para filtrar transações",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Transacoes" }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/transacoes/subcategoria/{id_subcategoria}": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar transações por subcategoria",
+        description: "Retorna todas as transações de uma subcategoria específica",
+        parameters: [
+          {
+            name: "id_subcategoria",
+            in: "path",
+            required: true,
+            description: "ID da subcategoria para filtrar transações",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Transacoes" }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/transacoes/periodo": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar transações por período",
+        description: "Retorna todas as transações entre duas datas. Formato: DD/MM/YYYY",
+        parameters: [
+          {
+            name: "inicio",
+            in: "query",
+            required: true,
+            description: "Data de início do período",
+            schema: { type: "string", example: "01/01/2024" }
+          },
+          {
+            name: "fim",
+            in: "query",
+            required: true,
+            description: "Data de fim do período",
+            schema: { type: "string", example: "31/01/2024" }
+          }
+        ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Listar_Transacoes" }
+                }
+              }
+            }
+          },
+          400: {
+            description: "Datas não informadas",
+            content: {
+              "application/json": {
+                example: { message: "Informe as datas de inicio e fim. Ex: ?inicio=01/01/2024&fim=31/01/2024" }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/transacoes/{id_transacao}": {
+      put: {
+        tags: ["Transações"],
+        summary: "Atualizar todos os dados da transação",
+        description: "Atualiza todos os campos de uma transação existente",
+        parameters: [
+          {
+            name: "id_transacao",
+            in: "path",
+            required: true,
+            description: "ID da transação a ser atualizada",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Cadastrar_Transacao" }
+            }
+          }
+        },
+        responses: {
+          200: { description: "Transação atualizada com sucesso!" },
+          404: {
+            description: "Transação não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Transação não encontrada." }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      },
+      delete: {
+        tags: ["Transações"],
+        summary: "Deletar transação",
+        description: "Remove permanentemente uma transação pelo ID",
+        parameters: [
+          {
+            name: "id_transacao",
+            in: "path",
+            required: true,
+            description: "ID da transação a ser removida",
+            schema: { type: "integer", example: 1 }
+          }
+        ],
+        responses: {
+          200: { description: "Transação removida com sucesso!" },
+          404: {
+            description: "Transação não encontrada",
+            content: {
+              "application/json": {
+                example: { message: "Transação não encontrada." }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    },
+    "/transacoes/total": {
+      get: {
+        tags: ["Transações"],
+        summary: "Listar todas as transações",
+        description: "Retorna todos os valores com base no tipo infomado(E/S) ",
+        // security: [{ bearerAuth: [] }],
+        // parameters: [
+        //   {
+        //     name: "tipo",
+        //     in: "query",
+        //     required: true,
+        //     description: "Tipo de transação: E para Entradas ou S para Saídas",
+        //     schema: {
+        //       type: "string",
+        //       enum: ["E", "S"],
+        //       example: "E"
+        //     }
+        //   }
+        // ],
+        responses: {
+          200: {
+            description: "Dados obtidos com sucesso!",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Total_Transacoes" }
+                }
+              }
+            }
+          },
+          500: { description: "Erro interno do servidor" }
+        }
+      }
+    }
+  },
+
+  components: {
+    securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Insira o token JWT obtido no login'
+        }
+      },
+      schemas: {
+        Listar_Usuarios: {
+          type: 'object',
+          properties: {
+            id: { type: "integer", example: 1 },
+            nome: { type: "string", example: "Ricardo" },
+            email: { type: "string", example: "ricardo@email.com" }
+          }
+        },
+        Cadastrar_Usuario: {
+          type: 'object',
+          properties: {
+            nome: { type: "string", example: "Ricardo" },
+            email: { type: "string", example: "ricardo2@email.com" },
+            senha: { type: "string", example: "Senha123" }
+          }
+        },
+        Atualizar_Usuario: {
+          type: 'object',
+          required: ["nome", "email", "senha"],
+          properties: {
+            nome: { type: "string", example: "Nina" },
+            email: { type: "string", example: "nina@email.com" },
+            senha: { type: "string", example: "Senha123" }
+          }
+        },
+        Login_Usuario: {
+          type: 'object',
+          required: ['email', 'senha'],
+          properties: {
+            email: { type: "string", example: "ricardo2@email.com" },
+            senha: { type: "string", example: "Senha123" }
+          }
+        },
+        Resposta_Login: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Login realizado com sucesso' },
+            token: { type: 'string', description: 'Token JWT gerado', example: 'eyJhbGciOiJIUzI1Ni...' },
+            usuario: {
+              type: 'object',
+              properties: {
+                id_usuario: { type: "integer", example: 1 },
+                nome: { type: "string", example: 'Ricardo' },
+                email: { type: "string", example: "ricardo@email.com" }
+              }
+            }
+          }
+        },
+        Listar_Categorias: {
+          type: "object",
+          properties: {
+            id_categoria: { type: "integer", example: 1 },
+            nome: { type: "string", example: "Saúde" },
+            descricao: { type: "string", example: "Gastos com saúde" },
+            tipo: { type: "string", enum: ["E", "S"], example: "S" },
+            cor: { type: "string", example: "#FF5733" },
+            icone: { type: "string", example: "heart" },
+            ativo: { type: "boolean", example: true }
+          }
+        },
+        Cadastrar_Categoria: {
+          type: "object",
+          required: ["nome", "tipo"],
+          properties: {
+            nome: { type: "string", example: "Saúde" },
+            descricao: { type: "string", example: "Gastos com saúde" },
+            tipo: { type: "string", enum: ["E", "S"], example: "S" },
+            cor: { type: "string", example: "#FF5733" },
+            icone: { type: "string", example: "heart" }
+          }
+        },
+        Patch_Categoria: {
+          type: "object",
+          properties: {
+            nome: { type: "string", example: "Saúde" },
+            descricao: { type: "string", example: "Gastos com saúde" },
+            tipo: { type: "string", enum: ["E", "S"], example: "S" },
+            cor: { type: "string", example: "#FF5733" },
+            icone: { type: "string", example: "heart" }
+          }
+        },
+        Listar_Subcategorias: {
+          type: "object",
+          properties: {
+            id_subcategoria: { type: "integer", example: 1 },
+            nome: { type: "string", example: "Consulta Médica" },
+            ativo: { type: "boolean", example: true },
+            id_categoria: { type: "integer", example: 2 }
+          }
+        },
+        Cadastrar_Subcategoria: {
+          type: "object",
+          required: ["nome", "id_categoria"],
+          properties: {
+            nome: { type: "string", example: "Consulta Médica" },
+            id_categoria: { type: "integer", example: 2 }
+          }
+        },
+        Atualizar_Subcategoria: {
+          type: "object",
+          required: ["nome", "id_categoria"],
+          properties: {
+            nome: { type: "string", example: "Exame de Sangue" },
+            id_categoria: { type: "integer", example: 2 }
+          }
+        },
+        Patch_Subcategoria: {
+          type: "object",
+          properties: {
+            nome: { type: "string", example: "Exame de Sangue" },
+            id_categoria: { type: "integer", example: 3 }
+          }
+        },
+        Listar_Transacoes: {
+          type: "object",
+          properties: {
+            id_transacao: { type: "integer", example: 1 },
+            valor: { type: "number", example: 150.00 },
+            descricao: { type: "string", example: "Consulta médica" },
+            data_registro: { type: "string", example: "15/01/2024 10:30:00" },
+            data_vencimento: { type: "string", example: "20/01/2024" },
+            data_pagamento: { type: "string", example: "18/01/2024" },
+            tipo: { type: "string", enum: ["E", "S"], example: "S" },
+            id_categoria: { type: "integer", example: 2 },
+            nome_categoria: { type: "string", example: "Saúde" },
+            id_subcategoria: { type: "integer", example: 5 },
+            nome_subcategoria: { type: "string", example: "Consulta Médica" }
+          }
+        },
+        Cadastrar_Transacao: {
+          type: "object",
+          required: ["valor", "tipo"],
+          properties: {
+            valor: { type: "number", example: 150.00 },
+            descricao: { type: "string", example: "Consulta médica" },
+            data_vencimento: { type: "string", example: "20/01/2024" },
+            data_pagamento: { type: "string", example: "18/01/2024" },
+            tipo: { type: "string", enum: ["E", "S"], example: "S" },
+            id_subcategoria: { type: "integer", example: 5 },
+            id_categoria: { type: "integer", example: 2 }
+          }
+        },
+        Total_Transacoes: {
+          type: "object",
+          properties: {
+            total: {
+              type: "number",
+              format: "float",
+              example: 1550.10,
+              description: "Soma total dos valores das transações filtradas"
+            }
+          }
         }
     }
+  }
 };
+
 export default documentacao;

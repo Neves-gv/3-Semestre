@@ -8,7 +8,7 @@ const router = Router();
 // ================= LISTAR USUÁRIOS =================
 router.get('/usuarios', autenticarToken, async (req, res) => {
     try {
-        const query = `SELECT * FROM usuarios ORDER BY id_usuario`;
+        const query = `SELECT * FROM usuarios WHERE ativo = true ORDER BY id_usuario`;
         const usuarios = await BD.query(query);
         return res.status(200).json(usuarios.rows);
     } catch (error) {
@@ -66,7 +66,7 @@ router.patch('/usuarios/:id_usuario', async (req, res) => {
     const { nome, email, senha, tipo_usuario } = req.body;
 
     try {
-        const verificarUsuario = await BD.query(`SELECT * FROM USUARIOS WHERE id_usuario = $1`, [id_usuario]);
+        const verificarUsuario = await BD.query(`SELECT * FROM USUARIOS WHERE id_usuario = $1 AND ativo = true`, [id_usuario]);
         if (verificarUsuario.rows.length === 0) {
             return res.status(404).json({ message: 'Usuario não encontrado' });
         }
